@@ -16,7 +16,7 @@ GATES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("ruff-format", ("-m", "ruff", "format", "--check", "src", "tests", "scripts")),
     ("bandit", ("-m", "bandit", "-q", "-r", "src")),
     ("pip-audit", ("-m", "pip_audit", "--skip-editable")),
-    ("secret-scan", (sys.executable, "scripts/check_secrets.py")),
+    ("secret-scan", ("scripts/check_secrets.py",)),
 )
 
 
