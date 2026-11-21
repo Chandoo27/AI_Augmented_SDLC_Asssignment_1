@@ -100,7 +100,7 @@ class GeminiAdapter:
                         self._sleep(float(min(2 ** (attempt - 1), 2)))
                         continue
                     raise ProviderError(
-                        "GEMINI_RETRY_EXHAUSTED",
+                        self._retry_failure_code(error),
                         "Gemini request failed after the configured attempts.",
                         attempts=attempt,
                     ) from error
@@ -123,6 +123,21 @@ class GeminiAdapter:
         if isinstance(error, httpx.TransportError):
             return True
         return error.code in RETRYABLE_STATUS_CODES
+
+    @staticmethod
+    def _retry_failure_code(error: errors.APIError | httpx.TransportError) -> str:
+        if isinstance(error, errors.APIError):
+            if error.code == 408:
+                return "GEMINI_TIMEOUT_RETRY_EXHAUSTED"
+            if error.code == 429:
+                return "GEMINI_RATE_LIMIT_RETRY_EXHAUSTED"
+            if error.code in {500, 502, 503, 504}:
+                return "GEMINI_SERVER_RETRY_EXHAUSTED"
+        elif isinstance(error, httpx.TimeoutException):
+            return "GEMINI_TIMEOUT_RETRY_EXHAUSTED"
+        elif isinstance(error, httpx.TransportError):
+            return "GEMINI_TRANSPORT_RETRY_EXHAUSTED"
+        return "GEMINI_RETRY_EXHAUSTED"
 
     @staticmethod
     def _parse_generation(

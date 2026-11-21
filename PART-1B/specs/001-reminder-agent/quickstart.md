@@ -74,6 +74,8 @@ evaluates the held-out set once. If the provider-attempt budget is exhausted, th
 returns a non-zero status and writes a privacy-safe partial report alongside the requested
 report path with the suffix `.incomplete`. Partial reports include only completed case IDs,
 safe failure codes, and available metrics; they do not claim threshold results.
+Retry-exhaustion codes distinguish rate-limit, server, timeout, and transport failures without
+including provider messages or response content.
 
 The thresholds are 100% schema validity, 100% deterministic property validity, at least 95%
 overall semantic accuracy, at least 90% semantic accuracy for each operation, and 100%

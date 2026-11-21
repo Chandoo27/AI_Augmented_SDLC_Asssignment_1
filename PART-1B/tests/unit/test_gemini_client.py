@@ -133,6 +133,29 @@ def test_TEST_GEMINI_RETRIES_TRANSIENT_PROVIDER_FAILURES_ONLY() -> None:
     assert sleeps == [1]
 
 
+@pytest.mark.parametrize(
+    ("status_code", "error_code"),
+    [
+        (408, "GEMINI_TIMEOUT_RETRY_EXHAUSTED"),
+        (429, "GEMINI_RATE_LIMIT_RETRY_EXHAUSTED"),
+        (503, "GEMINI_SERVER_RETRY_EXHAUSTED"),
+    ],
+)
+def test_TEST_GEMINI_CLASSIFIES_RETRYABLE_HTTP_FAILURES_SAFELY(
+    status_code: int,
+    error_code: str,
+) -> None:
+    client = FakeClient([errors.APIError(status_code, {}) for _ in range(2)])
+    adapter = GeminiAdapter(_settings(), client=client, sleep=lambda _: None)
+
+    with pytest.raises(ProviderError) as error:
+        adapter.generate(_request())
+
+    assert error.value.code == error_code
+    assert error.value.attempts == 2
+    assert len(client.models.calls) == 2
+
+
 def test_TEST_GEMINI_REPEATED_CALLS_ARE_INDEPENDENT_AND_POSITIVE_TEMPERATURE() -> None:
     client = FakeClient([_model_response(), _model_response(), _model_response()])
     adapter = GeminiAdapter(_settings(), client=client)
@@ -189,8 +212,23 @@ def test_TEST_GEMINI_REDACTS_EXHAUSTED_TRANSPORT_FAILURES() -> None:
     with pytest.raises(ProviderError) as error:
         adapter.generate(_request())
 
-    assert error.value.code == "GEMINI_RETRY_EXHAUSTED"
+    assert error.value.code == "GEMINI_TIMEOUT_RETRY_EXHAUSTED"
     assert "secret request details" not in str(error.value)
+    assert len(client.models.calls) == 2
+
+
+def test_TEST_GEMINI_CLASSIFIES_NON_TIMEOUT_TRANSPORT_FAILURES() -> None:
+    request = httpx.Request("GET", "https://example.com")
+    client = FakeClient(
+        [httpx.ConnectError("private transport details", request=request) for _ in range(2)]
+    )
+    adapter = GeminiAdapter(_settings(), client=client, sleep=lambda _: None)
+
+    with pytest.raises(ProviderError) as error:
+        adapter.generate(_request())
+
+    assert error.value.code == "GEMINI_TRANSPORT_RETRY_EXHAUSTED"
+    assert "private transport details" not in str(error.value)
     assert len(client.models.calls) == 2
 
 
