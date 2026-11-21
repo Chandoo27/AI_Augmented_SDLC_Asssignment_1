@@ -74,11 +74,28 @@ DEFAULT_SPECIFICATION_PATH = (
 )
 
 
+@dataclass(frozen=True)
+class EvaluationProgress:
+    planned_runs: int
+    completed_runs: int
+    provider_attempts: int
+    results: tuple[EvaluationResult, ...]
+    stopped_case_id: str
+    stopped_run_index: int
+
+
 class EvaluationInputError(ValueError):
-    def __init__(self, code: str, message: str, attempts: int = 0) -> None:
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        attempts: int = 0,
+        progress: EvaluationProgress | None = None,
+    ) -> None:
         super().__init__(message)
         self.code = code
         self.attempts = attempts
+        self.progress = progress
 
 
 @dataclass(frozen=True)
@@ -306,6 +323,30 @@ def threshold_failures(
     return tuple(sorted(set(failures)))
 
 
+def _call_budget_exhaustion(
+    *,
+    cases: Sequence[EvaluationCase],
+    run_plan: Sequence[tuple[str, int]],
+    results: list[EvaluationResult],
+    provider_attempts: int,
+    case_id: str,
+    run_index: int,
+) -> EvaluationInputError:
+    return EvaluationInputError(
+        "CALL_BUDGET_EXHAUSTED",
+        "Evaluation stopped because the provider-attempt budget was exhausted.",
+        attempts=provider_attempts,
+        progress=EvaluationProgress(
+            planned_runs=len(run_plan),
+            completed_runs=len(results),
+            provider_attempts=provider_attempts,
+            results=tuple(results),
+            stopped_case_id=case_id,
+            stopped_run_index=run_index,
+        ),
+    )
+
+
 def run_evaluation(
     cases: Sequence[EvaluationCase],
     agent: ReminderAgent,
@@ -374,20 +415,26 @@ def run_evaluation(
         except ProviderError as error:
             provider_attempts += error.attempts
             if error.code == "CALL_BUDGET_EXHAUSTED" or provider_attempts > max_calls:
-                raise EvaluationInputError(
-                    "CALL_BUDGET_EXHAUSTED",
-                    "Evaluation stopped because the provider-attempt budget was exhausted.",
-                    attempts=provider_attempts,
+                raise _call_budget_exhaustion(
+                    cases=cases,
+                    run_plan=run_plan,
+                    results=results,
+                    provider_attempts=provider_attempts,
+                    case_id=case_id,
+                    run_index=run_index,
                 ) from error
             results.append(_failed_result(case, run_index, error.code))
             continue
         except PipelineError as error:
             provider_attempts += error.attempts
             if provider_attempts > max_calls:
-                raise EvaluationInputError(
-                    "CALL_BUDGET_EXHAUSTED",
-                    "Evaluation stopped because the provider-attempt budget was exhausted.",
-                    attempts=provider_attempts,
+                raise _call_budget_exhaustion(
+                    cases=cases,
+                    run_plan=run_plan,
+                    results=results,
+                    provider_attempts=provider_attempts,
+                    case_id=case_id,
+                    run_index=run_index,
                 ) from error
             results.append(_failed_result(case, run_index, error.code))
             continue
@@ -396,10 +443,13 @@ def run_evaluation(
         if generation is not None:
             provider_attempts += generation.attempts
             if provider_attempts > max_calls:
-                raise EvaluationInputError(
-                    "CALL_BUDGET_EXHAUSTED",
-                    "Evaluation stopped because the provider-attempt budget was exhausted.",
-                    attempts=provider_attempts,
+                raise _call_budget_exhaustion(
+                    cases=cases,
+                    run_plan=run_plan,
+                    results=results,
+                    provider_attempts=provider_attempts,
+                    case_id=case_id,
+                    run_index=run_index,
                 )
             if generation.prompt_tokens is not None:
                 prompt_token_counts.append(generation.prompt_tokens)
@@ -489,14 +539,7 @@ def write_report(report: EvaluationReport, path: Path) -> None:
             "UNSAFE_REPORT_COMMAND",
             "Report command must be a recognized evaluation mode.",
         )
-    for result in report.results:
-        if not re.fullmatch(r"EV-[A-Z0-9-]+", result.case_id) or any(
-            not re.fullmatch(r"[A-Z0-9_]+", code) for code in result.failure_codes
-        ):
-            raise EvaluationInputError(
-                "UNSAFE_REPORT_RESULT",
-                "Report results must contain only stable case IDs and safe error codes.",
-            )
+    _validate_report_results(report.results)
     payload = asdict(report)
     payload["created_at"] = report.created_at.isoformat()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -504,6 +547,104 @@ def write_report(report: EvaluationReport, path: Path) -> None:
         json.dumps(payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+
+
+def write_incomplete_report(
+    error: EvaluationInputError,
+    path: Path,
+    *,
+    cases: Sequence[EvaluationCase],
+    model: str,
+    temperature: float,
+    prompt_version: str,
+    command: str,
+    max_calls: int,
+    thresholds: Mapping[str, float] = DEFAULT_THRESHOLDS,
+) -> None:
+    progress = error.progress
+    if (
+        error.code != "CALL_BUDGET_EXHAUSTED"
+        or progress is None
+        or command not in {"development", "held-out", "combined"}
+        or progress.provider_attempts != max_calls
+    ):
+        raise EvaluationInputError(
+            "INVALID_INCOMPLETE_REPORT",
+            "An incomplete report requires a call-budget failure and recognized command.",
+        )
+    _validate_report_results(progress.results)
+    case_ids = {case.case_id for case in cases}
+    if (
+        len(progress.results) != progress.completed_runs
+        or progress.completed_runs >= progress.planned_runs
+        or progress.stopped_case_id not in case_ids
+        or any(result.case_id not in case_ids for result in progress.results)
+    ):
+        raise EvaluationInputError(
+            "INVALID_INCOMPLETE_REPORT",
+            "Incomplete report progress does not match the evaluation cases.",
+        )
+
+    model_versions = sorted(
+        {result.model_version for result in progress.results if result.model_version is not None}
+    )
+    prompt_tokens = [
+        result.prompt_tokens for result in progress.results if result.prompt_tokens is not None
+    ]
+    candidate_tokens = [
+        result.candidate_tokens
+        for result in progress.results
+        if result.candidate_tokens is not None
+    ]
+    payload = {
+        "schema_version": "1.0.0",
+        "status": "incomplete",
+        "passed": False,
+        "command": command,
+        "created_at": datetime.now(UTC).isoformat(),
+        "dataset_version": "+".join(sorted({case.dataset_version for case in cases})),
+        "model": model,
+        "model_version": (
+            model_versions[0]
+            if len(model_versions) == 1
+            else "multiple"
+            if model_versions
+            else None
+        ),
+        "temperature": temperature,
+        "prompt_version": prompt_version,
+        "total_cases": len(cases),
+        "planned_runs": progress.planned_runs,
+        "completed_runs": progress.completed_runs,
+        "provider_attempts": progress.provider_attempts,
+        "max_provider_attempts": max_calls,
+        "stopped_case_id": progress.stopped_case_id,
+        "stopped_run_index": progress.stopped_run_index,
+        "error_code": error.code,
+        "thresholds": dict(thresholds),
+        "threshold_status": "NOT_EVALUATED_INCOMPLETE",
+        "partial_counts": {
+            "schema_valid": sum(result.schema_valid for result in progress.results),
+            "property_valid": sum(result.property_valid for result in progress.results),
+            "semantic_correct": sum(result.semantic_correct for result in progress.results),
+            "prompt_tokens": sum(prompt_tokens) if prompt_tokens else None,
+            "candidate_tokens": sum(candidate_tokens) if candidate_tokens else None,
+        },
+        "results": [asdict(result) for result in progress.results],
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _validate_report_results(results: Sequence[EvaluationResult]) -> None:
+    for result in results:
+        if not re.fullmatch(r"EV-[A-Z0-9-]+", result.case_id) or any(
+            not re.fullmatch(r"[A-Z0-9_]+", code) for code in result.failure_codes
+        ):
+            raise EvaluationInputError(
+                "UNSAFE_REPORT_RESULT",
+                "Report results must contain only stable case IDs and safe error codes.",
+            )
 
 
 def validate_traceability(

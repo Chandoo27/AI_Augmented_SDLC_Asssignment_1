@@ -127,6 +127,12 @@ def test_TEST_EVALUATION_STOPS_VISIBLY_ON_EXHAUSTED_PROVIDER_BUDGET() -> None:
     assert error.value.code == "CALL_BUDGET_EXHAUSTED"
     assert error.value.attempts == 1
     assert generator.calls == 2
+    assert error.value.progress is not None
+    assert error.value.progress.planned_runs == 2
+    assert error.value.progress.completed_runs == 1
+    assert error.value.progress.provider_attempts == 1
+    assert len(error.value.progress.results) == 1
+    assert error.value.progress.stopped_case_id == cases[1].case_id
 
 
 def _request_key(request: ReminderRequest) -> tuple[Any, ...]:

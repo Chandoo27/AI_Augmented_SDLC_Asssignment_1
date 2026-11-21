@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from reminder_agent.config import ConfigurationError, load_settings
+from reminder_agent.config import ConfigurationError, Settings, load_settings
 from reminder_agent.engine import ReminderAgent
 from reminder_agent.evaluation import (
     DEFAULT_THRESHOLDS,
@@ -12,9 +12,11 @@ from reminder_agent.evaluation import (
     load_cases,
     run_evaluation,
     select_repeat_case_ids,
+    write_incomplete_report,
     write_report,
 )
 from reminder_agent.gemini_client import GeminiAdapter
+from reminder_agent.models import EvaluationCase
 from reminder_agent.prompt import PROMPT_VERSION
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -38,6 +40,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    settings: Settings | None = None
+    cases: tuple[EvaluationCase, ...] = ()
+    incomplete_path: Path | None = None
     try:
         settings = load_settings()
         development = (
@@ -64,7 +69,28 @@ def main(argv: list[str] | None = None) -> int:
         _write_error(error.code)
         return 2
     except EvaluationInputError as error:
+        if error.progress is not None and settings is not None:
+            incomplete_path = args.report.with_name(
+                f"{args.report.stem}.incomplete{args.report.suffix}"
+            )
+            try:
+                write_incomplete_report(
+                    error,
+                    incomplete_path,
+                    cases=cases,
+                    model=settings.model,
+                    temperature=settings.temperature,
+                    prompt_version=PROMPT_VERSION,
+                    command=args.mode,
+                    max_calls=settings.max_calls,
+                    thresholds=DEFAULT_THRESHOLDS,
+                )
+            except (EvaluationInputError, OSError):
+                _write_error("INCOMPLETE_REPORT_WRITE_ERROR")
+                return 2
         _write_error(error.code)
+        if incomplete_path is not None:
+            sys.stderr.write(f"PARTIAL_REPORT: {incomplete_path}\n")
         return 2
     except OSError:
         _write_error("REPORT_WRITE_ERROR")

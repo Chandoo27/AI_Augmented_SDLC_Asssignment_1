@@ -70,8 +70,10 @@ reminder-agent-evaluate --mode combined --report evidence\evaluation-report.json
 ```
 
 `--mode development` evaluates the development set and its repeated sample; `--mode held-out`
-evaluates the held-out set once. The command stops visibly if its provider-attempt budget is
-exhausted. It returns a non-zero status if the release thresholds fail.
+evaluates the held-out set once. If the provider-attempt budget is exhausted, the command
+returns a non-zero status and writes a privacy-safe partial report alongside the requested
+report path with the suffix `.incomplete`. Partial reports include only completed case IDs,
+safe failure codes, and available metrics; they do not claim threshold results.
 
 The thresholds are 100% schema validity, 100% deterministic property validity, at least 95%
 overall semantic accuracy, at least 90% semantic accuracy for each operation, and 100%
