@@ -5,7 +5,7 @@
 - **Date:** 2026-11-21
 - **Environment:** Windows 11 Home Single Language, Intel Core Ultra 5 225H, Python 3.14.7
 - **Command:** `python scripts/run_harness.py` from `PART-1A`
-- **Final status:** Passed. All six configured harness gates passed in each of the final two runs.
+- **Final status:** Passed. All six configured harness gates passed in each of the final three runs.
 
 ## Final verification results
 
@@ -17,10 +17,11 @@
 - **Secret scan:** Passed; no secrets detected.
 
 The first two harness runs exposed gate failures during the verification process. After those
-issues were addressed, two consecutive complete runs passed all gates:
+issues were addressed, the following three complete runs passed all gates:
 
 - `evidence/harness-runs/20261121T084843454725Z/results.json`
-- `evidence/harness-runs/20261121T085120441932Z/results.json` (final recorded run)
+- `evidence/harness-runs/20261121T085120441932Z/results.json`
+- `evidence/harness-runs/20261121T120154015745Z/results.json` (latest recorded run)
 
 ## Performance acceptance
 

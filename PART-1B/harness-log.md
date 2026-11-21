@@ -21,6 +21,10 @@
 - **CLI checks:** Both the single-request and evaluation commands displayed their help
   successfully.
 
+The offline suite and configured quality/security checks were rerun on 2026-11-21 and passed
+again. Pytest emitted one upstream `google-genai` deprecation warning under Python 3.14; it
+did not cause a test or quality gate to fail.
+
 The offline integration tests exercise the evaluation workflow with deterministic fake model
 responses, including the planned 106-case, 130-run combined evaluation. This verifies the
 evaluation implementation; it is not a live Gemini evaluation and does not establish model
