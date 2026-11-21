@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from reminder_agent.config import ConfigurationError, load_settings
 
 
@@ -52,6 +53,49 @@ def test_TEST_CONFIG_REJECTS_INVALID_TEMPERATURE(temperature: str) -> None:
         )
 
     assert error.value.code == "INVALID_TEMPERATURE"
+
+
+def test_TEST_CONFIG_REJECTS_EMPTY_MODEL() -> None:
+    with pytest.raises(ConfigurationError) as error:
+        load_settings(
+            env={"GEMINI_API_KEY": "test-key", "GEMINI_MODEL": ""},
+            dotenv_path=None,
+        )
+
+    assert error.value.code == "INVALID_MODEL"
+
+
+@pytest.mark.parametrize("timeout", ["0", "-1", "invalid"])
+def test_TEST_CONFIG_REJECTS_INVALID_TIMEOUT(timeout: str) -> None:
+    with pytest.raises(ConfigurationError) as error:
+        load_settings(
+            env={"GEMINI_API_KEY": "test-key", "GEMINI_TIMEOUT_SECONDS": timeout},
+            dotenv_path=None,
+        )
+
+    assert error.value.code == "INVALID_TIMEOUT"
+
+
+@pytest.mark.parametrize("attempts", ["0", "4", "invalid"])
+def test_TEST_CONFIG_REJECTS_UNBOUNDED_RETRY_COUNT(attempts: str) -> None:
+    with pytest.raises(ConfigurationError) as error:
+        load_settings(
+            env={"GEMINI_API_KEY": "test-key", "GEMINI_MAX_ATTEMPTS": attempts},
+            dotenv_path=None,
+        )
+
+    assert error.value.code == "INVALID_MAX_ATTEMPTS"
+
+
+@pytest.mark.parametrize("call_limit", ["0", "-1", "invalid"])
+def test_TEST_CONFIG_REJECTS_INVALID_CALL_BUDGET(call_limit: str) -> None:
+    with pytest.raises(ConfigurationError) as error:
+        load_settings(
+            env={"GEMINI_API_KEY": "test-key", "GEMINI_MAX_CALLS": call_limit},
+            dotenv_path=None,
+        )
+
+    assert error.value.code == "INVALID_MAX_CALLS"
 
 
 def test_TEST_CONFIG_USES_APPROVED_MODEL_AND_TEMPERATURE_DEFAULTS() -> None:

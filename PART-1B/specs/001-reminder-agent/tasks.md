@@ -25,7 +25,7 @@ the behavior covered.
 - [x] T004 [P] Add canonical schema contract tests for exact fields, action/clarification
   invariants, datetime format, and invalid/extra fields (`FR-006`, `FR-007`, `NFR-001`,
   `AC-009`).
-- [ ] T005 [P] Define typed request, context, response, model configuration, evaluation case,
+- [x] T005 [P] Define typed request, context, response, model configuration, evaluation case,
   result, and report entities (`FR-008`, `FR-014`, `NFR-004`, `NFR-007`).
 - [ ] T006 [P] Create traceability data and tests requiring every FR/NFR to map to stable
   evaluation cases, tests, and planned implementation symbols (`FR-010`, `AC-010`).
@@ -38,7 +38,7 @@ the behavior covered.
 
 ## Phase 2 — Gemini Adapter and Safe Response Pipeline
 
-- [ ] T009 [P] Write configuration tests first, then implement local settings validation for
+- [x] T009 [P] Write configuration tests first, then implement local settings validation for
   missing key/model, positive temperature, timeout, retry, and call-budget boundaries
   (`FR-012`, `FR-014`, `NFR-010`).
 - [ ] T010 [P] Implement a typed model-adapter interface and fake adapter for deterministic
@@ -49,7 +49,7 @@ the behavior covered.
 - [ ] T012 Implement prompt versioning and structured request construction that treats
   request text as untrusted data and grants no model tools (`FR-001`, `FR-013`, `FR-014`,
   `NFR-007`).
-- [ ] T013 Write request/action validation tests first, then implement local
+- [x] T013 Write request/action validation tests first, then implement local
   request/time-zone/target validation and canonical response-schema validation; invalid or
   ambiguous proposals cannot become actions (`FR-005`, `FR-007..FR-009`, `AC-005..AC-009`).
 - [ ] T014 Implement JSON-only serialization for validated responses and sanitized

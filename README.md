@@ -6,7 +6,8 @@ This repository is being built in specification-first milestones for Assignment 
 
 - **Part 1A** — deterministic Smart Todo API; implementation and all release gates verified.
 - **Part 1B** — non-deterministic Natural Language Reminder Agent using the approved
-  `gemini-3.5-flash-lite` model; test-first implementation is beginning.
+  `gemini-3.5-flash-lite` model; configuration and local validation are implemented, with
+  provider integration and user stories in progress.
 
 Each part will keep its requirements, design, tests, implementation, and validation evidence
 together. The two `harness-log.md` files are intentionally ignored by Git because the student
