@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_links": {
+    "development": {
+      "path": "data/evaluation/v1.jsonl",
+      "case_id_field": "case_id",
+      "requirement_ids_field": "requirement_ids"
+    },
+    "held_out": {
+      "path": "data/evaluation/heldout-v1.jsonl",
+      "case_id_field": "case_id",
+      "requirement_ids_field": "requirement_ids"
+    }
+  },
+  "requirements": {
+    "FR-001": {
+      "test_ids": ["TEST_INTENT_CLASSIFICATION", "TEST_EVALUATION_SEMANTICS"],
+      "implementation_refs": ["src/reminder_agent/prompt.py::build_user_content", "src/reminder_agent/evaluation.py::semantic_correct"]
+    },
+    "FR-002": {
+      "test_ids": ["TEST_CREATE_EXTRACTION"],
+      "implementation_refs": ["src/reminder_agent/prompt.py::build_user_content", "src/reminder_agent/validation.py::validate_action"]
+    },
+    "FR-003": {
+      "test_ids": ["TEST_RESCHEDULE_TARGET"],
+      "implementation_refs": ["src/reminder_agent/validation.py::validate_action"]
+    },
+    "FR-004": {
+      "test_ids": ["TEST_SNOOZE_TIME"],
+      "implementation_refs": ["src/reminder_agent/validation.py::validate_action"]
+    },
+    "FR-005": {
+      "test_ids": ["TEST_CLARIFICATION_REQUIRED", "TEST_CLARIFICATION_TOPIC"],
+      "implementation_refs": ["src/reminder_agent/engine.py::process_request", "src/reminder_agent/evaluation.py::semantic_correct"]
+    },
+    "FR-006": {
+      "test_ids": ["TEST_JSON_ONLY_OUTPUT"],
+      "implementation_refs": ["src/reminder_agent/output.py::serialize_response"]
+    },
+    "FR-007": {
+      "test_ids": ["TEST_RESPONSE_SCHEMA", "TEST_ACTION_PROPERTIES"],
+      "implementation_refs": ["src/reminder_agent/validation.py::validate_response", "src/reminder_agent/validation.py::validate_action"]
+    },
+    "FR-008": {
+      "test_ids": ["TEST_REQUEST_VALIDATION", "TEST_ACTION_VALIDATION"],
+      "implementation_refs": ["src/reminder_agent/validation.py::validate_request", "src/reminder_agent/validation.py::validate_action"]
+    },
+    "FR-009": {
+      "test_ids": ["TEST_INVALID_REQUEST_NO_ACTION", "TEST_NO_SIDE_EFFECTS"],
+      "implementation_refs": ["src/reminder_agent/engine.py::process_request", "src/reminder_agent/cli.py::run"]
+    },
+    "FR-010": {
+      "test_ids": ["TEST_TRACEABILITY_COVERAGE"],
+      "implementation_refs": ["src/reminder_agent/evaluation.py::validate_traceability"]
+    },
+    "FR-011": {
+      "test_ids": ["TEST_EVALUATION_METRICS", "TEST_EVALUATION_THRESHOLDS"],
+      "implementation_refs": ["src/reminder_agent/evaluation.py::run_evaluation", "src/reminder_agent/evaluation.py::write_report"]
+    },
+    "FR-012": {
+      "test_ids": ["TEST_GEMINI_MODEL_CALL"],
+      "implementation_refs": ["src/reminder_agent/gemini_client.py::GeminiAdapter.generate"]
+    },
+    "FR-013": {
+      "test_ids": ["TEST_PROMPT_ISOLATION", "TEST_MODEL_OUTPUT_VALIDATION"],
+      "implementation_refs": ["src/reminder_agent/prompt.py::build_user_content", "src/reminder_agent/validation.py::validate_action"]
+    },
+    "FR-014": {
+      "test_ids": ["TEST_LOCAL_CONFIGURATION", "TEST_REPORT_PRIVACY"],
+      "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::write_report"]
+    },
+    "NFR-001": {
+      "test_ids": ["TEST_SCHEMA_VALIDITY_THRESHOLD"],
+      "implementation_refs": ["src/reminder_agent/validation.py::validate_response", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
+    },
+    "NFR-002": {
+      "test_ids": ["TEST_PROPERTY_VALIDITY_THRESHOLD"],
+      "implementation_refs": ["src/reminder_agent/validation.py::validate_action", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
+    },
+    "NFR-003": {
+      "test_ids": ["TEST_SEMANTIC_THRESHOLDS", "TEST_CLARIFICATION_ACCURACY"],
+      "implementation_refs": ["src/reminder_agent/evaluation.py::semantic_correct", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
+    },
+    "NFR-004": {
+      "test_ids": ["TEST_VERSIONED_REPORT"],
+      "implementation_refs": ["src/reminder_agent/evaluation.py::load_cases", "src/reminder_agent/evaluation.py::write_report"]
+    },
+    "NFR-005": {
+      "test_ids": ["TEST_CONFIGURED_QUALITY_GATES"],
+      "implementation_refs": [".github/workflows/ci.yml::part-1b"]
+    },
+    "NFR-006": {
+      "test_ids": ["TEST_COVERAGE_THRESHOLD"],
+      "implementation_refs": ["pyproject.toml::pytest-cov"]
+    },
+    "NFR-007": {
+      "test_ids": ["TEST_PRIVACY_REDACTION"],
+      "implementation_refs": ["src/reminder_agent/cli.py::run", "src/reminder_agent/evaluation.py::write_report"]
+    },
+    "NFR-008": {
+      "test_ids": ["TEST_DOCUMENTED_CONFIGURATION", "TEST_TRACEABILITY_COVERAGE"],
+      "implementation_refs": ["specs/001-reminder-agent/spec.md::Approved Decisions", "specs/001-reminder-agent/quickstart.md::Configuration"]
+    },
+    "NFR-009": {
+      "test_ids": ["TEST_INDEPENDENT_REPEAT_CALLS"],
+      "implementation_refs": ["src/reminder_agent/gemini_client.py::GeminiAdapter.generate", "src/reminder_agent/evaluation.py::select_repeat_case_ids"],
+      "evaluation_case_ids": [
+        "EV-CREATE-001",
+        "EV-CREATE-002",
+        "EV-CREATE-003",
+        "EV-RESCHEDULE-001",
+        "EV-RESCHEDULE-002",
+        "EV-RESCHEDULE-003",
+        "EV-SNOOZE-001",
+        "EV-SNOOZE-002",
+        "EV-SNOOZE-003",
+        "EV-CLARIFY-003",
+        "EV-CLARIFY-004",
+        "EV-CLARIFY-005"
+      ]
+    },
+    "NFR-010": {
+      "test_ids": ["TEST_PROVIDER_ATTEMPT_BUDGET", "TEST_TIMEOUT_AND_RETRY_LIMITS"],
+      "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::run_evaluation"]
+    }
+  },
+  "harness_evaluation_cases": {
+    "EV-HARNESS-QUALITY-GATES-001": {
+      "requirement_ids": ["NFR-005"],
+      "test_ids": ["TEST_CONFIGURED_QUALITY_GATES"],
+      "implementation_refs": [".github/workflows/ci.yml::part-1b"]
+    },
+    "EV-HARNESS-COVERAGE-001": {
+      "requirement_ids": ["NFR-006"],
+      "test_ids": ["TEST_COVERAGE_THRESHOLD"],
+      "implementation_refs": ["pyproject.toml::pytest-cov"]
+    },
+    "EV-HARNESS-DOCUMENTATION-001": {
+      "requirement_ids": ["NFR-008"],
+      "test_ids": ["TEST_DOCUMENTED_CONFIGURATION"],
+      "implementation_refs": ["specs/001-reminder-agent/quickstart.md::Configuration"]
+    },
+    "EV-HARNESS-CALL-BUDGET-001": {
+      "requirement_ids": ["NFR-010"],
+      "test_ids": ["TEST_PROVIDER_ATTEMPT_BUDGET"],
+      "implementation_refs": ["src/reminder_agent/evaluation.py::run_evaluation"]
+    }
+  }
+}

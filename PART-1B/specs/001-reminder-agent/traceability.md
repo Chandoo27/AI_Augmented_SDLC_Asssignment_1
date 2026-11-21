@@ -1,8 +1,14 @@
 # Traceability: Gemini Reminder Agent
 
-This is the planning traceability baseline. Implementation symbols are planned names and
-must be replaced with actual file/symbol references before implementation acceptance.
-The evaluation case IDs are families; each dataset row must use a unique stable ID.
+This matrix is the human-readable traceability baseline. The executable mapping is
+[`data/evaluation/traceability.json`](../../data/evaluation/traceability.json): each
+versioned dataset row has a stable `case_id` and `requirement_ids`, and the manifest maps
+requirements to test IDs and implementation references. The 12 repeated-call cases are
+listed explicitly under NFR-009.
+
+Some implementation references remain planned until their corresponding modules are
+implemented. Task T021 must replace those references with verified symbols and confirm that
+every requirement resolves to real source code.
 
 | Requirement | Story / acceptance | Planned evaluation IDs | Planned tests | Planned implementation |
 |---|---|---|---|---|
@@ -31,6 +37,7 @@ The evaluation case IDs are families; each dataset row must use a unique stable 
 | NFR-009 | AC-009 | `EV-REPEATED-CALL-*` | `TEST-NONDETERMINISM-*` | `gemini_client.GeminiAdapter`, `evaluation.run_evaluation` |
 | NFR-010 | AC-011 | `EV-CALL-BUDGET-*`, `EV-TIMEOUT-*` | `TEST-BUDGET-RETRY-*` | `config.load_settings`, `evaluation.run_evaluation` |
 
-**Acceptance gate**: each FR/NFR must link to at least one concrete evaluation row, test
-identifier, and implemented source symbol. Missing links fail the traceability test and
-release harness.
+**Acceptance gate**: the traceability test requires each FR/NFR to link to one or more
+concrete dataset or harness evaluation IDs, stable test IDs, and a planned implementation
+reference. Task T021 additionally verifies every reference against implemented source
+symbols before release.

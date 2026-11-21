@@ -211,7 +211,8 @@ task or datetime values are empty strings.
   stable model that supports structured outputs.
 - Temperature: `0.3`.
 - Evaluation: 86 development cases and 20 held-out cases; 12 selected cases have three total
-  runs each; 130 planned calls and a 140-call maximum including retries.
+  runs each; 130 planned evaluation runs and a 140-provider-attempt maximum including
+  retries. Invalid requests rejected locally do not call Gemini.
 - Thresholds: 100% schema validity; 100% deterministic property validity; at least 95%
   overall semantic correctness; at least 90% per operation; 100% clarification correctness.
 - Local credentials may be read from `PART-1B/.env` or process environment variables;

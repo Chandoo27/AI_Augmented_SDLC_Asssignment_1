@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 ReminderIntent = Literal["create", "reschedule", "snooze", "clarification"]
 
@@ -35,14 +35,17 @@ class EvaluationCase:
     requirement_ids: tuple[str, ...]
     operation: ReminderIntent
     category: str
-    request: ReminderRequest
+    request_payload: Mapping[str, Any]
     expected: ReminderResponse
+    clarification_topic: str | None = None
 
 
 @dataclass(frozen=True)
 class EvaluationResult:
     case_id: str
     run_index: int
+    operation: ReminderIntent
+    category: str
     schema_valid: bool
     property_valid: bool
     semantic_correct: bool
@@ -70,6 +73,7 @@ class EvaluationReport:
     schema_valid_count: int
     property_valid_count: int
     semantic_correct_count: int
+    clarification_required_count: int
     clarification_correct_count: int
     operation_metrics: Mapping[str, Mapping[str, float]]
     thresholds: Mapping[str, float]

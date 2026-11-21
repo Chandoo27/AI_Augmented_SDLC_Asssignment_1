@@ -101,10 +101,10 @@ PART-1B/
    diversity.
 4. Use code-based scoring against gold intent, task/target, clarification state, and
    equivalent aware datetime. Do not rely on an LLM judge.
-5. Apply a configurable maximum-call budget before starting and stop visibly at the limit.
-   The proposal is 140 actual calls maximum: 106 baseline cases, 24 additional repeated
-   calls, and at most 10 transient retries. Capture provider token counts when supplied,
-   without assuming that token counts are cost.
+5. Apply a maximum of 140 provider attempts and stop visibly at the limit. The plan has 130
+   evaluation runs: 106 baseline cases plus 24 additional repeats. Locally rejected inputs
+   do not call Gemini, so actual provider attempts may be fewer; retries count toward the
+   same cap. Capture token counts when supplied, without assuming that token counts are cost.
 6. Emit JSON reports containing case IDs, safe error codes, configuration and dataset
    versions, metrics, token totals when available, and pass/fail; never request text,
    response text, or credentials.
@@ -112,7 +112,8 @@ PART-1B/
    unmet semantic/clarification thresholds, missing repeated runs, or exhausted call budget.
 
 The student approved the legacy Part 1B corpus sizes: 86 development cases and 20 held-out
-cases. The live run therefore has 130 planned calls and a 140-call ceiling.
+cases. The live run therefore has 130 planned evaluation runs and a 140-provider-attempt
+ceiling.
 
 ## Error Handling and Safety
 
@@ -145,11 +146,11 @@ cases. The live run therefore has 130 planned calls and a 140-call ceiling.
 ## Approved Configuration
 
 The student approved the existing Part 1B specification as the requirements baseline,
-Gemini model `gemini-3.5-flash-lite`, temperature `0.3`, corpus sizes and repeated-call
-design, the 140-call cap, and all listed evaluation thresholds. Implementation is authorized
-to begin test-first. A credential already placed in chat must not be used; the student must
-rotate it and configure a replacement locally in the ignored `PART-1B/.env` file or the
-process environment.
+Gemini model `gemini-3.5-flash-lite`, temperature `0.3`, corpus sizes and repeated-run
+design, the 140-provider-attempt cap, and all listed evaluation thresholds. Implementation is
+authorized to begin test-first. A credential already placed in chat must not be used; the
+student must rotate it and configure a replacement locally in the ignored `PART-1B/.env`
+file or the process environment.
 
 ## Risks
 

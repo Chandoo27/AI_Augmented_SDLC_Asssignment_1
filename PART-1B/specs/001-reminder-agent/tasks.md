@@ -27,9 +27,9 @@ the behavior covered.
   `AC-009`).
 - [x] T005 [P] Define typed request, context, response, model configuration, evaluation case,
   result, and report entities (`FR-008`, `FR-014`, `NFR-004`, `NFR-007`).
-- [ ] T006 [P] Create traceability data and tests requiring every FR/NFR to map to stable
+- [x] T006 [P] Create traceability data and tests requiring every FR/NFR to map to stable
   evaluation cases, tests, and planned implementation symbols (`FR-010`, `AC-010`).
-- [ ] T007 [P] Create synthetic versioned development and held-out datasets with fixed
+- [x] T007 [P] Create synthetic versioned development and held-out datasets with fixed
   temporal context and operation/clarification coverage (`US-001..US-003`, `FR-001..FR-005`,
   `NFR-003`, `NFR-004`).
 - [ ] T008 Add deterministic evaluator tests for separate schema/property/semantic metrics,
