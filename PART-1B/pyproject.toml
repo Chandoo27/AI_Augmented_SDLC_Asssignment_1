@@ -9,6 +9,7 @@ description = "A Gemini-backed natural-language reminder agent"
 requires-python = ">=3.11"
 dependencies = [
     "google-genai>=1,<2",
+    "httpx>=0.27,<1",
     "jsonschema[format-nongpl]>=4.23,<5",
     "python-dotenv>=1,<2",
     "tzdata>=2024.1",

@@ -41,12 +41,12 @@ the behavior covered.
 - [x] T009 [P] Write configuration tests first, then implement local settings validation for
   missing key/model, positive temperature, timeout, retry, and call-budget boundaries
   (`FR-012`, `FR-014`, `NFR-010`).
-- [ ] T010 [P] Implement a typed model-adapter interface and fake adapter for deterministic
+- [x] T010 [P] Implement a typed provider interface and injectable fake client for deterministic
   tests (`FR-012`, `FR-013`, `NFR-009`).
-- [ ] T011 Implement Gemini SDK integration with JSON response mode, explicit positive
+- [x] T011 Implement Gemini SDK integration with JSON response mode, explicit positive
   temperature, bounded requests, and safe usage metadata (`FR-012..FR-014`, `NFR-007`,
   `NFR-009..NFR-010`).
-- [ ] T012 Implement prompt versioning and structured request construction that treats
+- [x] T012 Implement prompt versioning and structured request construction that treats
   request text as untrusted data and grants no model tools (`FR-001`, `FR-013`, `FR-014`,
   `NFR-007`).
 - [x] T013 Write request/action validation tests first, then implement local

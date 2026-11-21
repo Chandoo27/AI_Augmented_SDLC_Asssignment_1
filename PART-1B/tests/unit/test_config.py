@@ -44,7 +44,7 @@ def test_TEST_CONFIG_REQUIRES_API_KEY() -> None:
     assert error.value.code == "MISSING_API_KEY"
 
 
-@pytest.mark.parametrize("temperature", ["0", "-0.1", "2.1", "invalid"])
+@pytest.mark.parametrize("temperature", ["0", "-0.1", "2.1", "nan", "inf", "invalid"])
 def test_TEST_CONFIG_REJECTS_INVALID_TEMPERATURE(temperature: str) -> None:
     with pytest.raises(ConfigurationError) as error:
         load_settings(
@@ -65,7 +65,7 @@ def test_TEST_CONFIG_REJECTS_EMPTY_MODEL() -> None:
     assert error.value.code == "INVALID_MODEL"
 
 
-@pytest.mark.parametrize("timeout", ["0", "-1", "invalid"])
+@pytest.mark.parametrize("timeout", ["0", "-1", "120.1", "nan", "inf", "invalid"])
 def test_TEST_CONFIG_REJECTS_INVALID_TIMEOUT(timeout: str) -> None:
     with pytest.raises(ConfigurationError) as error:
         load_settings(
@@ -87,7 +87,7 @@ def test_TEST_CONFIG_REJECTS_UNBOUNDED_RETRY_COUNT(attempts: str) -> None:
     assert error.value.code == "INVALID_MAX_ATTEMPTS"
 
 
-@pytest.mark.parametrize("call_limit", ["0", "-1", "invalid"])
+@pytest.mark.parametrize("call_limit", ["0", "-1", "141", "invalid"])
 def test_TEST_CONFIG_REJECTS_INVALID_CALL_BUDGET(call_limit: str) -> None:
     with pytest.raises(ConfigurationError) as error:
         load_settings(

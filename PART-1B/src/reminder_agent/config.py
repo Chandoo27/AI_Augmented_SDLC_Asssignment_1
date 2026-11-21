@@ -1,3 +1,4 @@
+import math
 import os
 from collections.abc import Mapping
 from dataclasses import dataclass, field
@@ -70,8 +71,11 @@ def load_settings(
         )
     except ValueError as error:
         raise ConfigurationError("INVALID_TIMEOUT", "Timeout must be a positive number.") from error
-    if timeout_seconds <= 0:
-        raise ConfigurationError("INVALID_TIMEOUT", "Timeout must be a positive number.")
+    if not math.isfinite(timeout_seconds) or not 0 < timeout_seconds <= 120:
+        raise ConfigurationError(
+            "INVALID_TIMEOUT",
+            "Timeout must be a finite number between 0 and 120 seconds.",
+        )
 
     try:
         max_attempts = int(effective.get("GEMINI_MAX_ATTEMPTS", str(DEFAULT_MAX_ATTEMPTS)))
@@ -90,8 +94,11 @@ def load_settings(
         raise ConfigurationError(
             "INVALID_MAX_CALLS", "Maximum calls must be a positive integer."
         ) from error
-    if max_calls < 1:
-        raise ConfigurationError("INVALID_MAX_CALLS", "Maximum calls must be a positive integer.")
+    if not 1 <= max_calls <= DEFAULT_MAX_CALLS:
+        raise ConfigurationError(
+            "INVALID_MAX_CALLS",
+            f"Maximum calls must be an integer from 1 to {DEFAULT_MAX_CALLS}.",
+        )
 
     return Settings(
         api_key=api_key,
