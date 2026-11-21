@@ -45,7 +45,7 @@ implementation. Tests and harness rules are protected once the student approves 
   AC-011–AC-013, AC-017).
 - [x] T013 Implement app construction and common HTTP error handling without exposing internal
   paths or stack traces (US-001, FR-010–FR-011; AC-006, AC-012–AC-013).
-- [ ] T014 Implement CRUD service operations and REST routes, preserving partial-update and
+- [x] T014 Implement CRUD service operations and REST routes, preserving partial-update and
   not-found behavior (US-001, FR-001–FR-005, FR-010–FR-011; AC-001–AC-007, AC-012).
 
 ## Phase 4: Implement US-002 — Organize and Find Tasks

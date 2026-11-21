@@ -146,4 +146,4 @@ class ErrorDetail(BaseModel):
 class ErrorResponse(BaseModel):
     code: ErrorCode
     message: str
-    details: list[ErrorDetail] = Field(default_factory=list)
+    details: list[ErrorDetail]
