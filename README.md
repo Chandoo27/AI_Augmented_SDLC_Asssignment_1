@@ -27,5 +27,6 @@ serialization, and deterministic offline scoring tests. No live Gemini evaluatio
 run.
 
 The Part 1B combined live Gemini evaluation stopped at the 140-provider-attempt ceiling
-without producing a report. Its release gate remains pending until the failure is diagnosed
-and a complete approved evaluation report is reviewed.
+without producing a report. A separate one-attempt diagnostic succeeded but did not satisfy
+the evaluation criteria. Its release gate remains pending until a complete approved
+evaluation report is reviewed.

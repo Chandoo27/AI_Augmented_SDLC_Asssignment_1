@@ -86,7 +86,8 @@ the behavior covered.
   results in release evidence and update the human-readable harness log
   (`NFR-001..NFR-010`, `AC-001..AC-012`).
   The 2026-11-21 combined live attempt exhausted the 140-provider-attempt ceiling before
-  completion; no live metrics or evaluation report are available yet.
+  completion; a subsequent one-attempt diagnostic succeeded, but no live metrics or
+  evaluation report are available yet.
 
 ## Dependency Order
 

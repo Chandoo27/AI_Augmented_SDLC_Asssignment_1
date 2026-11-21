@@ -48,10 +48,15 @@ report. The CLI exposed only the safe budget-exhaustion code; the cause of the a
 whether any individual responses were usable cannot be determined from this run. Do not treat
 the planned run counts or thresholds above as observed results.
 
+A separately authorized diagnostic request then succeeded in one provider attempt, and its
+response passed local action validation. This confirms that a single request can reach the
+provider; it is not part of the evaluation corpus and does not replace the required live
+development/held-out metrics or identify why the combined run exhausted its budget.
+
 ## Outcome and remaining work
 
 The offline tests and configured local quality/security checks passed, but the live run did
-not produce acceptance evidence. Task T023 remains open until the attempt-budget failure is
-diagnosed and the approved development and held-out evaluation completes with a privacy-safe
-report whose actual metrics meet the thresholds. This log does not claim Part 1B release
-acceptance.
+not produce acceptance evidence. The diagnostic was successful but does not satisfy release
+criteria. Task T023 remains open until the attempt-budget failure is diagnosed and the
+approved development and held-out evaluation completes with a privacy-safe report whose
+actual metrics meet the thresholds. This log does not claim Part 1B release acceptance.
