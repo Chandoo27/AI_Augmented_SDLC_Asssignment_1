@@ -25,10 +25,12 @@ issues were addressed, the following three complete runs passed all gates:
 
 ## Performance acceptance
 
-The documented baseline measured 100 of 100 requests under one second against a 1,000-task
-collection on the machine listed above. The performance acceptance criterion is at least 95
-of 100 measured requests under one second. See `specs/001-smart-todo-api/quickstart.md` for
-the dedicated performance-test command and machine details.
+The dedicated performance test passed on 2026-11-21: all 100 of 100 list, filter, and sort
+requests completed in under one second against a 1,000-task collection. The acceptance
+criterion is at least 95 of 100 requests under one second. The test recorded Windows 11,
+Python 3.14.7, and the machine identifier in
+`evidence/performance/part-1a-performance.xml`. See
+`specs/001-smart-todo-api/quickstart.md` for the test command and machine details.
 
 ## Outcome
 
