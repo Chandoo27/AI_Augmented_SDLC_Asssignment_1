@@ -56,7 +56,7 @@ implementation. Tests and harness rules are protected once the student approves 
 
 ## Phase 5: Implement US-003 — Complete Tasks and Keep Their Data
 
-- [ ] T016 Implement idempotent complete/reopen operations and verify all task fields survive
+- [x] T016 Implement idempotent complete/reopen operations and verify all task fields survive
   app recreation (US-003, FR-006, FR-009–FR-011; AC-006, AC-008, AC-011, AC-013, AC-016).
 
 ## Phase 6: Release Verification

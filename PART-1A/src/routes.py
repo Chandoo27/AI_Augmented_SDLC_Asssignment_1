@@ -5,7 +5,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Request, Response, status
 
-from src.models import ErrorResponse, Task, TaskCreate, TaskFilters, TaskUpdate
+from src.models import ErrorResponse, Task, TaskCreate, TaskFilters, TaskStatus, TaskUpdate
 from src.services import TaskService
 
 router = APIRouter()
@@ -82,3 +82,27 @@ def delete_task(
 ) -> Response:
     service.delete_task(task_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post(
+    "/tasks/{task_id}/complete",
+    response_model=Task,
+    responses=ERROR_RESPONSES,
+)
+def complete_task(
+    task_id: UUID,
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> Task:
+    return service.set_status(task_id, TaskStatus.COMPLETED)
+
+
+@router.post(
+    "/tasks/{task_id}/reopen",
+    response_model=Task,
+    responses=ERROR_RESPONSES,
+)
+def reopen_task(
+    task_id: UUID,
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> Task:
+    return service.set_status(task_id, TaskStatus.PENDING)

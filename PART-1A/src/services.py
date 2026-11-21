@@ -74,6 +74,17 @@ class TaskService:
 
         self.store.transact(delete)
 
+    def set_status(self, task_id: UUID, status: TaskStatus) -> Task:
+        def update(tasks: list[Task]) -> Task:
+            for index, existing in enumerate(tasks):
+                if existing.id == task_id:
+                    updated = existing.model_copy(update={"status": status})
+                    tasks[index] = updated
+                    return updated
+            raise TaskNotFound
+
+        return self.store.transact(update)
+
     @staticmethod
     def priority_key(task: Task) -> tuple[int, datetime, str]:
         priority_order = {
