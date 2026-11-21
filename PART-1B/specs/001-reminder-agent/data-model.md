@@ -29,6 +29,9 @@ responses require `intent=clarification`, `needs_clarification=true`, and a non-
 | `timeout_seconds` | positive number | Bounded network timeout |
 | `max_attempts` | positive integer | Explicitly bounded retry policy |
 
+Configuration is loaded from `PART-1B/.env` when present, then overlaid by process
+environment variables. The `.env` file is local-only and ignored by Git.
+
 ## Evaluation Case and Report
 
 An immutable, versioned evaluation case has a stable case ID, linked FR/NFR IDs, operation,

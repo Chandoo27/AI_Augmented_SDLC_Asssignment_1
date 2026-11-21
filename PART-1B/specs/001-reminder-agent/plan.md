@@ -1,7 +1,6 @@
 # Implementation Plan: Gemini Reminder Agent
 
-**Feature**: `001-reminder-agent` | **Status**: Draft; implementation is gated on student approval and reconciliation with the
-authoritative assignment brief.
+**Feature**: `001-reminder-agent` | **Status**: Approved; test-first implementation may begin.
 
 ## Summary
 
@@ -14,13 +13,17 @@ fallbacks are explicitly prohibited.
 ## Proposed Technical Choices
 
 - Python 3.11+ with a typed `src/reminder_agent/` package.
-- Google GenAI Python SDK using the Gemini content-generation API and JSON response mode.
+- Google GenAI Python SDK using the Gemini content-generation API and JSON response mode,
+  targeting the stable `gemini-3.5-flash-lite` model.
 - A simple provider-facing response schema to constrain generation, followed by independent
   validation against the canonical Draft 2020-12 schema and application property rules.
-- `GEMINI_API_KEY`, `GEMINI_MODEL`, and `GEMINI_TEMPERATURE` supplied only via the local
-  process environment. Never commit a key or require a `.env` file.
-- Configurable positive temperature; provisional draft value `0.3`. Exact model and
-  temperature are open student decisions, not implementation defaults until approved.
+- `GEMINI_API_KEY`, `GEMINI_MODEL`, and `GEMINI_TEMPERATURE` loaded from the local
+  `PART-1B/.env` file when present, with process environment variables taking precedence.
+  Never commit `.env` or a key.
+- Defaults: `GEMINI_MODEL=gemini-3.5-flash-lite` and positive
+  `GEMINI_TEMPERATURE=0.3`; both remain locally configurable.
+- Use `python-dotenv` to load only the Part 1B `.env`; do not print or inspect credential
+  contents in logs, test output, or reports.
 - `jsonschema` with an explicit format checker, Python `datetime`/`zoneinfo` for offset and
   zone validation, pytest/Hypothesis for deterministic tests, and Ruff/mypy/Bandit/pip-audit/
   secret scanning for quality gates.
@@ -34,8 +37,8 @@ and the content-generation endpoint:
 - <https://ai.google.dev/api/generate-content>
 - <https://ai.google.dev/gemini-api/docs/models>
 
-The selected SDK method and model ID must be confirmed against the live official API
-documentation before implementation.
+The selected model's official page identifies it as stable and supports structured outputs.
+Verify the SDK call signature and response metadata again during implementation.
 
 ## Architecture
 
@@ -108,9 +111,8 @@ PART-1B/
 7. Fail the live release evaluation on schema/property errors, incomplete traceability,
    unmet semantic/clarification thresholds, missing repeated runs, or exhausted call budget.
 
-The legacy Part 1B documentation uses 86 development cases and 20 held-out cases. The
-proposed live run therefore has 130 planned calls and a 140-call ceiling. These values are
-provisional until checked against the assignment brief and student approval.
+The student approved the legacy Part 1B corpus sizes: 86 development cases and 20 held-out
+cases. The live run therefore has 130 planned calls and a 140-call ceiling.
 
 ## Error Handling and Safety
 
@@ -140,16 +142,14 @@ provisional until checked against the assignment brief and student approval.
 - **Quality/security**: configured test and coverage gate, lint/format/type checks,
   Bandit, pip-audit, and secret scan.
 
-## Approval Decisions Before Implementation
+## Approved Configuration
 
-1. Confirm this specification against the original assignment brief.
-2. Approve an available Gemini model ID and SDK/API surface.
-3. Approve positive temperature (proposed `0.3`) and repeated subset size (proposed 12
-   cases with three total calls per selected case).
-4. Approve dataset sizes/call budget (proposed 86 development + 20 held-out, 130 planned
-   calls and a 140-call ceiling including retries).
-5. Confirm the existing 100% schema/property, 95% overall semantic, 90% per-operation, and
-   100% clarification thresholds.
+The student approved the existing Part 1B specification as the requirements baseline,
+Gemini model `gemini-3.5-flash-lite`, temperature `0.3`, corpus sizes and repeated-call
+design, the 140-call cap, and all listed evaluation thresholds. Implementation is authorized
+to begin test-first. A credential already placed in chat must not be used; the student must
+rotate it and configure a replacement locally in the ignored `PART-1B/.env` file or the
+process environment.
 
 ## Risks
 

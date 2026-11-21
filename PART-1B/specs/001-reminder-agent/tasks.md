@@ -1,8 +1,9 @@
 # Tasks: Gemini Reminder Agent
 
 **Input**: Draft design documents in `specs/001-reminder-agent/`
-**Status**: Planning only. Do not begin implementation until the student approves the
-specification, plan, and task breakdown and the authoritative assignment brief is reconciled.
+**Status**: Approved for test-first implementation. The student designated the prior
+`Assignment_1/PART-1B` specification as the requirements baseline and approved the model and
+evaluation settings.
 
 Task IDs are stable and must appear in the commits that complete them. Every task links to
 US/FR/NFR/AC IDs. `[P]` indicates independent work in separate files; user-story tags identify
@@ -10,17 +11,17 @@ the behavior covered.
 
 ## Phase 0 — Review Gate
 
-- [ ] T001 Confirm the authoritative assignment brief and reconcile Part 1B requirements,
+- [x] T001 Use the prior `Assignment_1/PART-1B` specification as the requirements baseline and reconcile Part 1B requirements,
   thresholds, deliverables, and permitted provider with the draft (`US-001..US-003`,
   `FR-001..FR-014`, `NFR-001..NFR-010`, `AC-001..AC-012`).
-- [ ] T002 Obtain student approval for the Gemini model/API, positive temperature, repeated
-  evaluation sample, dataset/call budget, and threshold decisions (`FR-012`, `NFR-009`,
-  `NFR-010`).
+- [x] T002 Obtain student approval for `gemini-3.5-flash-lite`, temperature `0.3`, the repeated
+  evaluation sample, dataset/call budget, and thresholds (`FR-012`, `NFR-009`, `NFR-010`).
 
 ## Phase 1 — Testable Contract and Evaluation Baseline
 
 - [ ] T003 [P] Create the Python package/test/data layout, dependency configuration, CI, and
-  ignore rules without adding either student `harness-log.md` (`NFR-005`, `NFR-008`).
+  ignore rules; load local `PART-1B/.env` without adding either student `harness-log.md`
+  (`NFR-005`, `NFR-008`, `FR-014`).
 - [ ] T004 [P] Add canonical schema contract tests for exact fields, action/clarification
   invariants, datetime format, and invalid/extra fields (`FR-006`, `FR-007`, `NFR-001`,
   `AC-009`).

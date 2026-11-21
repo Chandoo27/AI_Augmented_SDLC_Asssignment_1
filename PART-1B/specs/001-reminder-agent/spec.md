@@ -1,9 +1,8 @@
 # Feature Specification: Gemini Reminder Agent
 
-**Feature branch**: `001-reminder-agent` | **Status**: Draft — student review required before implementation
-**Input**: Existing Part 1B requirements and the student's decision to use Gemini. The
-authoritative assignment brief has not yet been located in the workspace; confirm this draft
-against it before implementation.
+**Feature branch**: `001-reminder-agent` | **Status**: Approved for implementation
+**Input**: Existing Part 1B specification from the prior `Assignment_1` checkout, designated
+by the student as the requirements baseline, with the student's decision to use Gemini.
 
 ## User Stories and Acceptance Scenarios
 
@@ -203,13 +202,17 @@ task or datetime values are empty strings.
 - Using a deterministic natural-language parser as a primary path or fallback.
 - Storing or collecting user API keys in the repository, reports, or chat.
 
-## Assumptions and Open Decisions
+## Approved Decisions
 
-- The assignment brief is not present in the workspace. Its required model, model version,
-  evaluation corpus, and precise harness thresholds remain unverified.
-- This draft retains the existing five-field response contract and the earlier Part 1B
-  operation semantics.
-- The plan proposes Google GenAI Python SDK structured JSON output, a configurable model ID,
-  and a positive temperature. The student must approve the exact model/version, temperature,
-  repeat sample size, call budget, and any assignment-specific threshold changes before
-  implementation.
+- The existing Part 1B specification in the prior `Assignment_1` checkout is the source
+  requirements baseline. Its previous deterministic/no-LLM plan is superseded by the
+  student's explicit Gemini selection.
+- Model ID: `gemini-3.5-flash-lite`, confirmed against current Google documentation as a
+  stable model that supports structured outputs.
+- Temperature: `0.3`.
+- Evaluation: 86 development cases and 20 held-out cases; 12 selected cases have three total
+  runs each; 130 planned calls and a 140-call maximum including retries.
+- Thresholds: 100% schema validity; 100% deterministic property validity; at least 95%
+  overall semantic correctness; at least 90% per operation; 100% clarification correctness.
+- Local credentials may be read from `PART-1B/.env` or process environment variables;
+  environment variables take precedence. `.env` remains ignored and must never be committed.
