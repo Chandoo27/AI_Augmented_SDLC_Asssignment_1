@@ -4,12 +4,12 @@
 
 - **Date:** 2026-11-21
 - **Environment:** Windows, Python 3.14.7
-- **Status:** Offline verification passed. A combined live evaluation was attempted but stopped
-  at the configured provider-attempt ceiling; live acceptance remains incomplete.
+- **Status:** Offline verification passed. Three combined live attempts stopped at the
+  configured provider-attempt ceiling; live acceptance remains incomplete.
 
 ## Offline verification results
 
-- **Tests:** 115 passed.
+- **Tests:** 116 passed.
 - **Core coverage:** 95.54%, above the configured 90% minimum.
 - **Ruff formatting:** Passed.
 - **Ruff lint:** Passed.
@@ -41,25 +41,32 @@ accuracy.
   least 95% overall semantic accuracy; at least 90% semantic accuracy for each operation;
   and 100% clarification correctness.
 
-Two combined attempts were made on 2026-11-21, each with the approved 140 provider-attempt
-ceiling. Both exited with `CALL_BUDGET_EXHAUSTED` before all planned evaluation runs
-completed. Neither run wrote an evaluation report, so there are no valid aggregate metrics,
-token totals, or empirical Gemini accuracy results to report. The CLI exposed only the safe
-budget-exhaustion code; it did not retain per-case details that would explain why the attempt
-budget was consumed or whether individual responses were usable. Do not treat the planned run
-counts or thresholds above as observed results.
+Three combined attempts were made on 2026-11-21 with the approved 140 provider-attempt
+ceiling. All exited with `CALL_BUDGET_EXHAUSTED` before the planned evaluation completed.
+The first two attempts did not write reports. The third, using the instrumented runner, wrote
+`evidence/evaluation-report.incomplete.json`: 97 of 130 planned runs were recorded before 140
+provider attempts were consumed. The run stopped at `EV-SNOOZE-011`, run index 1.
 
-A separately authorized diagnostic request between the two runs succeeded in one provider
-attempt, and its response passed local action validation. The two combined attempts and the
-diagnostic used 281 provider attempts in total. The diagnostic confirms that a single request
-can reach the provider; it is not part of the evaluation corpus and does not replace the
-required live development/held-out metrics or identify why both combined runs exhausted
-their budgets.
+Among the 97 recorded run results, safe failure-code occurrences were `GEMINI_RETRY_EXHAUSTED`
+(42), `INVALID_MODEL_ACTION` (3), and `SEMANTIC_MISMATCH` (9). The partial counts were 52
+schema-valid, 52 property-valid, and 43 semantically correct. The report marks threshold
+status `NOT_EVALUATED_INCOMPLETE`; these partial counts are not acceptance scores. It records
+13,807 prompt tokens and 2,820 candidate tokens from completed results only; these totals do
+not cover failed attempts or the two earlier runs. The safe retry code does not distinguish
+HTTP rate limits, server errors, or transport timeouts, so the precise cause remains unknown.
+Do not treat the planned run counts or thresholds above as observed results.
+
+A separately authorized diagnostic request between the first and second combined attempts
+succeeded in one provider attempt, and its response passed local action validation. The three
+combined attempts and the diagnostic used 421 provider attempts in total. The diagnostic
+confirms that a single request can reach the provider; it is not part of the evaluation corpus
+and does not replace the required live development/held-out metrics or identify why the
+combined runs exhausted their budgets.
 
 ## Outcome and remaining work
 
-The offline tests and configured local quality/security checks passed, but neither live run
-produced acceptance evidence. The diagnostic was successful but does not satisfy release
-criteria. Task T023 remains open until the repeated attempt-budget failure is diagnosed and
-the approved development and held-out evaluation completes with a privacy-safe report whose
+The offline tests and configured local quality/security checks passed, but no combined live
+run produced complete acceptance evidence. The diagnostic was successful but does not satisfy
+release criteria. Task T023 remains open until the retry failures are diagnosed and the
+approved development and held-out evaluation completes with a privacy-safe report whose
 actual metrics meet the thresholds. This log does not claim Part 1B release acceptance.
