@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "20261121T084822673319Z",
+  "created_utc": "2026-11-21T08:48:22.673769+00:00",
+  "passed": false,
+  "gates": [
+    {
+      "name": "pytest",
+      "command": [
+        "E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "============================= test session starts =============================\nplatform win32 -- Python 3.14.7, pytest-9.2.0, pluggy-1.7.0\nrootdir: E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\nconfigfile: pyproject.toml\ntestpaths: tests\nplugins: anyio-4.16.0, platformdirs-4.14.8, cov-7.1.0\ncollected 42 items\n\ntests\\test_filters.py ........                                           [ 19%]\ntests\\test_harness_runner.py ..                                          [ 23%]\ntests\\test_storage.py ......                                             [ 38%]\ntests\\test_tasks.py ..........................                           [100%]\n\n=============================== tests coverage ================================\n_______________ coverage: platform win32, python 3.14.7-final-0 _______________\n\nName              Stmts   Miss  Cover   Missing\n-----------------------------------------------\nsrc\\__init__.py       0      0   100%\nsrc\\main.py          48      4    92%   77-78, 86-90\nsrc\\models.py       134     18    87%   47, 78-80, 85-94, 124, 130, 155, 161\nsrc\\routes.py        32      0   100%\nsrc\\services.py      59      1    98%   34\nsrc\\storage.py       70      3    96%   64, 68-69\n-----------------------------------------------\nTOTAL               343     26    92%\nRequired test coverage of 80% reached. Total coverage: 92.42%\n============================= 42 passed in 3.04s ==============================\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "ruff-check",
+      "command": [
+        "E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "scripts"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "ruff-format",
+      "command": [
+        "E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "scripts"
+      ],
+      "status": "FAIL",
+      "return_code": 1,
+      "stdout": "unformatted: File would be reformatted\n   --> src\\models.py:111:51\n    |\n110 |         description=(\n    -             \"Repeat tags for match-any filtering; \"\n    -             \"comma-separated values are also accepted.\"\n111 +             \"Repeat tags for match-any filtering; comma-separated values are also accepted.\"\n112 |         ),\n    |\n\n1 file would be reformatted, 12 files already formatted\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "bandit",
+      "command": [
+        "E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\\.venv\\Scripts\\python.exe",
+        "-m",
+        "bandit",
+        "-q",
+        "-r",
+        "src"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "pip-audit",
+      "command": [
+        "E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip_audit",
+        "--skip-editable"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "Name           Skip Reason\n-------------- -------------------------------\nsmart-todo-api distribution marked as editable\n",
+      "stderr": "No known vulnerabilities found\n",
+      "error": null
+    },
+    {
+      "name": "secret-scan",
+      "command": [
+        "E:\\Assignment_1\\AI_Augmented_SDLC_Asssignment_1\\PART-1A\\.venv\\Scripts\\python.exe",
+        "scripts/check_secrets.py"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "No secrets detected.\n",
+      "stderr": "",
+      "error": null
+    }
+  ]
+}

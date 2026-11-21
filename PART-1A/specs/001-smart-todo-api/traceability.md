@@ -27,10 +27,12 @@ pytest node IDs, and implemented source symbols.
 
 - The test cases were reviewed and approved against the specification before the
   `part-1a-pre-implementation` baseline checkpoint.
+- A post-baseline harness repair corrected the secret-scan command invocation; test cases,
+  gate definitions, and thresholds were not changed.
 - `FR-009` now has a test for a directory at the configured data path; malformed and unreadable
   storage errors must not be silently treated as an empty collection.
 - `FR-011` has an explicit stable error-shape test. Existing malformed-file tests verify
   sanitization and preservation.
 - All 42 application and harness tests pass with 92.42% line coverage. The final six-gate
-  harness report is `evidence/harness-runs/20261121T084843454725Z/results.json`.
-- A clean-checkout verification remains before release acceptance.
+  harness report is `evidence/harness-runs/20261121T085120441932Z/results.json`.
+- All six gates also pass from a clean clone after installing from `pyproject.toml`.

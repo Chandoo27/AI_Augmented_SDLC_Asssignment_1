@@ -1,8 +1,8 @@
 # Tasks: Smart Todo API
 
 **Input**: Approved planning input in this directory (`spec.md`, `plan.md`)  
-**Status**: T001–T016 are complete, including the approved baseline and all three stories.
-Release documentation and verification tasks T017–T018 are in progress.
+**Status**: T001–T018 are complete. The three stories and release gates are implemented and
+verified; the student-authored harness log remains pending.
 **Rule**: Additions or changes to requirements must be approved in `spec.md` before
 implementation. Tests and harness rules are protected once the student approves the baseline.
 
@@ -61,10 +61,10 @@ implementation. Tests and harness rules are protected once the student approves 
 
 ## Phase 6: Release Verification
 
-- [ ] T017 Document setup, API contract, test/harness commands, performance test machine, and
+- [x] T017 Document setup, API contract, test/harness commands, performance test machine, and
   limitations; ensure commands are reproducible from a clean checkout (FR-010–FR-012,
   NFR-001–NFR-005; AC-014–AC-018).
-- [ ] T018 Run all baseline-protected tests and quality/security gates, resolve genuine
+- [x] T018 Run all baseline-protected tests and quality/security gates, resolve genuine
   findings without weakening requirements, and prepare evidence for the student's final
   review (FR-001–FR-012, NFR-001–NFR-005; AC-001–AC-018).
 
