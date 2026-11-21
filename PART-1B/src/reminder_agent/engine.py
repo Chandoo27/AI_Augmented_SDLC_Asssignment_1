@@ -16,9 +16,10 @@ class RequestGenerator(Protocol):
 
 
 class PipelineError(RuntimeError):
-    def __init__(self, code: str, message: str) -> None:
+    def __init__(self, code: str, message: str, attempts: int = 0) -> None:
         super().__init__(message)
         self.code = code
+        self.attempts = attempts
 
 
 @dataclass(frozen=True)
@@ -49,6 +50,7 @@ class ReminderAgent:
             raise PipelineError(
                 "INVALID_MODEL_ACTION",
                 "Gemini returned an invalid reminder response.",
+                attempts=generation.attempts,
             ) from error
         return ProcessedResponse(response=response, generation=generation)
 

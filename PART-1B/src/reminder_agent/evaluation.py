@@ -1,13 +1,16 @@
 import json
+import math
 import re
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
+from reminder_agent.engine import PipelineError, ReminderAgent
+from reminder_agent.gemini_client import ProviderError
 from reminder_agent.models import (
     EvaluationCase,
     EvaluationReport,
@@ -18,6 +21,7 @@ from reminder_agent.validation import (
     SCHEMA,
     ActionValidationError,
     RequestValidationError,
+    validate_action,
     validate_request,
     validate_response,
 )
@@ -37,7 +41,9 @@ TIME_QUESTION_TERMS = {
     "duration",
     "hour",
     "time",
+    "timezone",
     "when",
+    "zone",
 }
 TARGET_QUESTION_TERMS = {
     "existing reminder",
@@ -59,12 +65,19 @@ DEFAULT_THRESHOLDS = {
     "per_operation_semantic_accuracy": 0.9,
     "clarification_accuracy": 1.0,
 }
+DEFAULT_TRACEABILITY_PATH = (
+    Path(__file__).resolve().parents[2] / "data" / "evaluation" / "traceability.json"
+)
+DEFAULT_SPECIFICATION_PATH = (
+    Path(__file__).resolve().parents[2] / "specs" / "001-reminder-agent" / "spec.md"
+)
 
 
 class EvaluationInputError(ValueError):
-    def __init__(self, code: str, message: str) -> None:
+    def __init__(self, code: str, message: str, attempts: int = 0) -> None:
         super().__init__(message)
         self.code = code
+        self.attempts = attempts
 
 
 @dataclass(frozen=True)
@@ -292,6 +305,183 @@ def threshold_failures(
     return tuple(sorted(set(failures)))
 
 
+def run_evaluation(
+    cases: Sequence[EvaluationCase],
+    agent: ReminderAgent,
+    *,
+    model: str,
+    temperature: float,
+    prompt_version: str,
+    max_calls: int,
+    repeated_case_ids: Sequence[str] = (),
+    runs_per_repeated_case: int = 3,
+    max_runs: int = 130,
+    thresholds: Mapping[str, float] = DEFAULT_THRESHOLDS,
+    traceability_manifest: Path = DEFAULT_TRACEABILITY_PATH,
+    specification_path: Path = DEFAULT_SPECIFICATION_PATH,
+    created_at: datetime | None = None,
+    command: str = "combined",
+) -> EvaluationReport:
+    if not cases:
+        raise EvaluationInputError("EMPTY_EVALUATION", "Evaluation requires at least one case.")
+    if not 1 <= max_calls <= 140:
+        raise EvaluationInputError(
+            "INVALID_CALL_BUDGET",
+            "Provider-attempt budget must be between 1 and 140.",
+        )
+    if (
+        not model.strip()
+        or not prompt_version.strip()
+        or not math.isfinite(temperature)
+        or not 0 < temperature <= 2
+    ):
+        raise EvaluationInputError(
+            "INVALID_EVALUATION_CONFIG",
+            "Model, prompt version, and a temperature in (0, 2] are required.",
+        )
+    if command not in {"development", "held-out", "combined"}:
+        raise EvaluationInputError(
+            "INVALID_EVALUATION_COMMAND",
+            "Evaluation command must be a recognized mode.",
+        )
+
+    run_plan = plan_runs(
+        cases,
+        repeated_case_ids=repeated_case_ids,
+        runs_per_repeated_case=runs_per_repeated_case,
+        max_runs=max_runs,
+    )
+    cases_by_id = {case.case_id: case for case in cases}
+    if command == "combined":
+        development_cases = tuple(case for case in cases if case.dataset_version == "v1")
+        expected_repeats = select_repeat_case_ids(development_cases)
+        if set(repeated_case_ids) != set(expected_repeats):
+            raise EvaluationInputError(
+                "INVALID_REPEAT_SELECTION",
+                "Combined evaluation must repeat the approved development sample.",
+            )
+    traceability = validate_traceability(traceability_manifest, specification_path)
+    results: list[EvaluationResult] = []
+    provider_attempts = 0
+    prompt_token_counts: list[int] = []
+    candidate_token_counts: list[int] = []
+
+    for case_id, run_index in run_plan:
+        case = cases_by_id[case_id]
+        try:
+            processed = agent.process(case.request_payload)
+        except ProviderError as error:
+            provider_attempts += error.attempts
+            if error.code == "CALL_BUDGET_EXHAUSTED" or provider_attempts > max_calls:
+                raise EvaluationInputError(
+                    "CALL_BUDGET_EXHAUSTED",
+                    "Evaluation stopped because the provider-attempt budget was exhausted.",
+                    attempts=provider_attempts,
+                ) from error
+            results.append(_failed_result(case, run_index, error.code))
+            continue
+        except PipelineError as error:
+            provider_attempts += error.attempts
+            if provider_attempts > max_calls:
+                raise EvaluationInputError(
+                    "CALL_BUDGET_EXHAUSTED",
+                    "Evaluation stopped because the provider-attempt budget was exhausted.",
+                    attempts=provider_attempts,
+                ) from error
+            results.append(_failed_result(case, run_index, error.code))
+            continue
+
+        generation = processed.generation
+        if generation is not None:
+            provider_attempts += generation.attempts
+            if provider_attempts > max_calls:
+                raise EvaluationInputError(
+                    "CALL_BUDGET_EXHAUSTED",
+                    "Evaluation stopped because the provider-attempt budget was exhausted.",
+                    attempts=provider_attempts,
+                )
+            if generation.prompt_tokens is not None:
+                prompt_token_counts.append(generation.prompt_tokens)
+            if generation.candidate_tokens is not None:
+                candidate_token_counts.append(generation.candidate_tokens)
+
+        schema_valid = _is_schema_valid(processed.response)
+        property_valid = _is_property_valid(case, processed.response, processed.local_error_code)
+        semantic_is_correct = semantic_correct(
+            processed.response,
+            case.expected,
+            clarification_topic=case.clarification_topic,
+        )
+        failure_codes: list[str] = []
+        if not schema_valid:
+            failure_codes.append("INVALID_RESPONSE_SCHEMA")
+        if not property_valid:
+            failure_codes.append("INVALID_ACTION_PROPERTIES")
+        if not semantic_is_correct:
+            failure_codes.append("SEMANTIC_MISMATCH")
+        results.append(
+            EvaluationResult(
+                case_id=case.case_id,
+                run_index=run_index,
+                operation=case.operation,
+                category=case.category,
+                schema_valid=schema_valid,
+                property_valid=property_valid,
+                semantic_correct=semantic_is_correct,
+                failure_codes=tuple(failure_codes),
+                model_version=None if generation is None else generation.model_version,
+                prompt_tokens=None if generation is None else generation.prompt_tokens,
+                candidate_tokens=None if generation is None else generation.candidate_tokens,
+            )
+        )
+
+    metrics = compute_metrics(results, cases)
+    failed_thresholds = threshold_failures(metrics, thresholds)
+    traceability_coverage = {
+        requirement_id: len(case_ids) for requirement_id, case_ids in traceability.items()
+    }
+    dataset_versions = sorted({case.dataset_version for case in cases})
+    model_versions = sorted(
+        {result.model_version for result in results if result.model_version is not None}
+    )
+    report = EvaluationReport(
+        schema_version="1.0.0",
+        dataset_version="+".join(dataset_versions),
+        prompt_version=prompt_version,
+        model=model,
+        model_version=(
+            model_versions[0]
+            if len(model_versions) == 1
+            else "multiple"
+            if model_versions
+            else None
+        ),
+        temperature=temperature,
+        command=command,
+        created_at=created_at or datetime.now(UTC),
+        total_cases=len(cases),
+        total_runs=len(run_plan),
+        call_count=provider_attempts,
+        prompt_tokens=sum(prompt_token_counts) if prompt_token_counts else None,
+        candidate_tokens=sum(candidate_token_counts) if candidate_token_counts else None,
+        schema_valid_count=sum(result.schema_valid for result in results),
+        property_valid_count=sum(result.property_valid for result in results),
+        semantic_correct_count=sum(result.semantic_correct for result in results),
+        clarification_required_count=metrics.clarification_required_count,
+        clarification_correct_count=metrics.clarification_correct_count,
+        operation_metrics=metrics.operation_metrics,
+        traceability_coverage=traceability_coverage,
+        thresholds=dict(thresholds),
+        failed_thresholds=failed_thresholds,
+        results=tuple(results),
+        passed=not failed_thresholds
+        and not any(
+            code not in {"SEMANTIC_MISMATCH"} for result in results for code in result.failure_codes
+        ),
+    )
+    return report
+
+
 def write_report(report: EvaluationReport, path: Path) -> None:
     if report.command not in {"development", "held-out", "combined"}:
         raise EvaluationInputError(
@@ -432,6 +622,10 @@ def semantic_correct(
     if set(actual) != RESPONSE_FIELDS or set(expected_values) != RESPONSE_FIELDS:
         return False
     try:
+        SCHEMA_VALIDATOR.validate(expected_values)
+    except ValidationError:
+        return False
+    try:
         validate_response(actual)
     except ActionValidationError:
         return False
@@ -546,6 +740,50 @@ def _parse_case(value: object, line_number: int) -> EvaluationCase:
         expected=expected_response,
         clarification_topic=clarification_topic,
     )
+
+
+def _failed_result(
+    case: EvaluationCase,
+    run_index: int,
+    error_code: str,
+) -> EvaluationResult:
+    return EvaluationResult(
+        case_id=case.case_id,
+        run_index=run_index,
+        operation=case.operation,
+        category=case.category,
+        schema_valid=False,
+        property_valid=False,
+        semantic_correct=False,
+        failure_codes=(error_code,),
+    )
+
+
+def _is_schema_valid(response: Mapping[str, Any]) -> bool:
+    try:
+        validate_response(response)
+    except ActionValidationError:
+        return False
+    return True
+
+
+def _is_property_valid(
+    case: EvaluationCase,
+    response: Mapping[str, Any],
+    local_error_code: str | None,
+) -> bool:
+    if local_error_code is not None:
+        return (
+            _is_schema_valid(response)
+            and response.get("intent") == "clarification"
+            and response.get("needs_clarification") is True
+        )
+    try:
+        request = validate_request(case.request_payload)
+        validate_action(request, response)
+    except (ActionValidationError, RequestValidationError):
+        return False
+    return True
 
 
 def _validate_traceability_record(value: object, record_id: str) -> None:

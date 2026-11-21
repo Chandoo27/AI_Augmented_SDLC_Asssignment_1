@@ -133,6 +133,19 @@ def test_TEST_GEMINI_RETRIES_TRANSIENT_PROVIDER_FAILURES_ONLY() -> None:
     assert sleeps == [1]
 
 
+def test_TEST_GEMINI_REPEATED_CALLS_ARE_INDEPENDENT_AND_POSITIVE_TEMPERATURE() -> None:
+    client = FakeClient([_model_response(), _model_response(), _model_response()])
+    adapter = GeminiAdapter(_settings(), client=client)
+
+    results = [adapter.generate(_request()) for _ in range(3)]
+
+    assert len(results) == 3
+    assert len(client.models.calls) == 3
+    assert adapter.provider_attempts == 3
+    assert all(call["config"].temperature > 0 for call in client.models.calls)
+    assert all(call["config"].seed is None for call in client.models.calls)
+
+
 def test_TEST_GEMINI_RETRIES_CANNOT_EXCEED_PROVIDER_ATTEMPT_BUDGET() -> None:
     client = FakeClient([errors.APIError(429, {}), _model_response()])
     adapter = GeminiAdapter(_settings(max_calls=1), client=client, sleep=lambda _: None)

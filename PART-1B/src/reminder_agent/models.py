@@ -68,14 +68,16 @@ class EvaluationReport:
     total_cases: int
     total_runs: int
     call_count: int
-    prompt_tokens: int
-    candidate_tokens: int
+    prompt_tokens: int | None
+    candidate_tokens: int | None
     schema_valid_count: int
     property_valid_count: int
     semantic_correct_count: int
     clarification_required_count: int
     clarification_correct_count: int
     operation_metrics: Mapping[str, Mapping[str, float]]
+    traceability_coverage: Mapping[str, int]
     thresholds: Mapping[str, float]
+    failed_thresholds: tuple[str, ...]
     results: tuple[EvaluationResult, ...]
     passed: bool

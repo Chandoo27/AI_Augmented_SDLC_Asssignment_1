@@ -16,9 +16,10 @@ RETRYABLE_STATUS_CODES = {408, 429, 500, 502, 503, 504}
 
 
 class ProviderError(RuntimeError):
-    def __init__(self, code: str, message: str) -> None:
+    def __init__(self, code: str, message: str, attempts: int = 0) -> None:
         super().__init__(message)
         self.code = code
+        self.attempts = attempts
 
 
 @dataclass(frozen=True)
@@ -84,6 +85,7 @@ class GeminiAdapter:
                 raise ProviderError(
                     "CALL_BUDGET_EXHAUSTED",
                     "Gemini provider-attempt budget is exhausted.",
+                    attempts=attempt - 1,
                 )
             self._provider_attempts += 1
             try:
@@ -100,15 +102,21 @@ class GeminiAdapter:
                     raise ProviderError(
                         "GEMINI_RETRY_EXHAUSTED",
                         "Gemini request failed after the configured attempts.",
+                        attempts=attempt,
                     ) from error
                 raise ProviderError(
                     "GEMINI_PROVIDER_ERROR",
                     "Gemini rejected the request.",
+                    attempts=attempt,
                 ) from error
 
             return self._parse_generation(response, attempt)
 
-        raise ProviderError("GEMINI_RETRY_EXHAUSTED", "Gemini request failed.")
+        raise ProviderError(
+            "GEMINI_RETRY_EXHAUSTED",
+            "Gemini request failed.",
+            attempts=self._settings.max_attempts,
+        )
 
     @staticmethod
     def _is_retryable(error: errors.APIError | httpx.TransportError) -> bool:
@@ -125,18 +133,32 @@ class GeminiAdapter:
             text = response.text
         except ValueError as error:
             raise ProviderError(
-                "EMPTY_MODEL_RESPONSE", "Gemini returned no text candidate."
+                "EMPTY_MODEL_RESPONSE",
+                "Gemini returned no text candidate.",
+                attempts=attempts,
             ) from error
 
         if not text or not text.strip():
-            raise ProviderError("EMPTY_MODEL_RESPONSE", "Gemini returned no text candidate.")
+            raise ProviderError(
+                "EMPTY_MODEL_RESPONSE",
+                "Gemini returned no text candidate.",
+                attempts=attempts,
+            )
 
         try:
             payload = json.loads(text)
         except json.JSONDecodeError as error:
-            raise ProviderError("INVALID_MODEL_JSON", "Gemini returned invalid JSON.") from error
+            raise ProviderError(
+                "INVALID_MODEL_JSON",
+                "Gemini returned invalid JSON.",
+                attempts=attempts,
+            ) from error
         if not isinstance(payload, dict):
-            raise ProviderError("INVALID_MODEL_JSON", "Gemini response must be a JSON object.")
+            raise ProviderError(
+                "INVALID_MODEL_JSON",
+                "Gemini response must be a JSON object.",
+                attempts=attempts,
+            )
 
         usage = response.usage_metadata
         return ModelGeneration(

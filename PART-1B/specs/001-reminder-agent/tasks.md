@@ -70,10 +70,10 @@ the behavior covered.
 
 ## Phase 4 — Evaluation and Release
 
-- [ ] T019 Implement development/held-out evaluation, repeated independent calls, bounded
+- [x] T019 Implement development/held-out evaluation, repeated independent calls, bounded
   call budget, deterministic scoring, token-usage totals, and privacy-safe reports
   (`FR-010..FR-011`, `NFR-001..NFR-004`, `NFR-007`, `NFR-009..NFR-010`, `AC-010`).
-- [ ] T020 Add focused tests proving live mode issues independent positive-temperature model
+- [x] T020 Add focused tests proving live mode issues independent positive-temperature model
   calls without asserting outputs must differ; ordinary tests remain offline
   (`FR-012`, `NFR-009`, `AC-009`).
 - [ ] T021 Complete requirement-to-test/case/source traceability and verify each requirement

@@ -196,7 +196,9 @@ def test_TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT(
         clarification_required_count=0,
         clarification_correct_count=0,
         operation_metrics={"create": {"semantic_accuracy": 1.0}},
+        traceability_coverage={"FR-001": 3},
         thresholds=dict(DEFAULT_THRESHOLDS),
+        failed_thresholds=(),
         results=(result,),
         passed=True,
     )

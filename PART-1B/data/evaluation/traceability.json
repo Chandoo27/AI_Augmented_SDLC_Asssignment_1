@@ -54,11 +54,11 @@
       "implementation_refs": ["src/reminder_agent/evaluation.py::validate_traceability"]
     },
     "FR-011": {
-      "test_ids": ["TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS", "TEST_EVALUATION_PLANS_130_RUNS_AND_ENFORCES_RUN_BUDGET"],
+      "test_ids": ["TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS", "TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT"],
       "implementation_refs": ["src/reminder_agent/evaluation.py::run_evaluation", "src/reminder_agent/evaluation.py::write_report"]
     },
     "FR-012": {
-      "test_ids": ["TEST_GEMINI_MODEL_CALL"],
+      "test_ids": ["TEST_GEMINI_MODEL_CALL", "TEST_GEMINI_REPEATED_CALLS_ARE_INDEPENDENT_AND_POSITIVE_TEMPERATURE"],
       "implementation_refs": ["src/reminder_agent/gemini_client.py::GeminiAdapter.generate"]
     },
     "FR-013": {
@@ -66,7 +66,7 @@
       "implementation_refs": ["src/reminder_agent/prompt.py::build_user_content", "src/reminder_agent/validation.py::validate_action"]
     },
     "FR-014": {
-      "test_ids": ["TEST_LOCAL_CONFIGURATION", "TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT"],
+      "test_ids": ["TEST_LOCAL_CONFIGURATION", "TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT"],
       "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-001": {
@@ -82,7 +82,7 @@
       "implementation_refs": ["src/reminder_agent/evaluation.py::semantic_correct", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
     },
     "NFR-004": {
-      "test_ids": ["TEST_EVALUATION_LOADS_VERSIONED_86_CASE_DEVELOPMENT_DATASET", "TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT"],
+      "test_ids": ["TEST_EVALUATION_LOADS_VERSIONED_86_CASE_DEVELOPMENT_DATASET", "TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT"],
       "implementation_refs": ["src/reminder_agent/evaluation.py::load_cases", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-005": {
@@ -94,7 +94,7 @@
       "implementation_refs": ["pyproject.toml::pytest-cov"]
     },
     "NFR-007": {
-      "test_ids": ["TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT"],
+      "test_ids": ["TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT"],
       "implementation_refs": ["src/reminder_agent/cli.py::run", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-008": {
@@ -102,7 +102,7 @@
       "implementation_refs": ["specs/001-reminder-agent/spec.md::Approved Decisions", "specs/001-reminder-agent/quickstart.md::Configuration"]
     },
     "NFR-009": {
-      "test_ids": ["TEST_INDEPENDENT_REPEAT_CALLS"],
+      "test_ids": ["TEST_GEMINI_REPEATED_CALLS_ARE_INDEPENDENT_AND_POSITIVE_TEMPERATURE", "TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT"],
       "implementation_refs": ["src/reminder_agent/gemini_client.py::GeminiAdapter.generate", "src/reminder_agent/evaluation.py::select_repeat_case_ids"],
       "evaluation_case_ids": [
         "EV-CREATE-001",
@@ -120,7 +120,7 @@
       ]
     },
     "NFR-010": {
-      "test_ids": ["TEST_GEMINI_RETRIES_CANNOT_EXCEED_PROVIDER_ATTEMPT_BUDGET", "TEST_GEMINI_CALLS_SHARE_PROVIDER_ATTEMPT_BUDGET"],
+      "test_ids": ["TEST_GEMINI_RETRIES_CANNOT_EXCEED_PROVIDER_ATTEMPT_BUDGET", "TEST_EVALUATION_STOPS_VISIBLY_ON_EXHAUSTED_PROVIDER_BUDGET"],
       "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::run_evaluation"]
     }
   },
