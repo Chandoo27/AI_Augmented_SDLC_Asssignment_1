@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Review status**: Carried forward from the prior checkout; awaiting student review in this repository before planning or implementation.
+**Review status**: Student approved this draft for planning on 2026-11-21; implementation remains gated on review of the plan and harness checkpoint.
 
 **Input**: User description: "Build a Smart Todo API application supporting task creation, updates, deletion, viewing, completion, tag filtering, priority sorting, and local JSON persistence."
 

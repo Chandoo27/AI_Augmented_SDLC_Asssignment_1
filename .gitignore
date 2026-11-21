@@ -8,6 +8,7 @@ __pycache__/
 .coverage.*
 htmlcov/
 *.egg-info/
+.mentor/
 
 # Student-authored assignment evidence; keep these outside Git.
 /PART-1A/harness-log.md
