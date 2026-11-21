@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 
 import pytest
+
 from reminder_agent.validation import (
     ActionValidationError,
     RequestValidationError,
@@ -56,15 +57,28 @@ def test_TEST_REQUEST_VALIDATION_NORMALIZES_AWARE_CONTEXT() -> None:
 @pytest.mark.parametrize(
     ("raw", "error_code"),
     [
+        ("not-an-object", "INVALID_REQUEST"),
         ({}, "MISSING_TEXT"),
+        ({"text": None}, "MISSING_TEXT"),
+        ({"text": "valid", "unexpected": True}, "INVALID_REQUEST_FIELDS"),
         ({"text": "   "}, "EMPTY_REQUEST"),
         ({"text": "x" * 4097}, "REQUEST_TOO_LONG"),
+        ({"text": "valid", "context": []}, "INVALID_CONTEXT"),
+        ({"text": "valid", "context": {"timezone": ""}}, "INVALID_TIMEZONE"),
         (_raw_request(timezone="Invalid/Zone"), "INVALID_TIMEZONE"),
         (_raw_request(reference_time="2026-11-19T09:00:00"), "INVALID_REFERENCE_TIME"),
+        (
+            {"text": "valid", "context": {"reminder_tasks": "not-a-list"}},
+            "INVALID_REMINDER_TASKS",
+        ),
+        (
+            {"text": "valid", "context": {"reminder_tasks": [42]}},
+            "INVALID_REMINDER_TASKS",
+        ),
     ],
 )
 def test_TEST_REQUEST_VALIDATION_REJECTS_INVALID_INPUT(
-    raw: dict[str, Any],
+    raw: object,
     error_code: str,
 ) -> None:
     with pytest.raises(RequestValidationError) as error:
@@ -85,6 +99,23 @@ def test_TEST_RESPONSE_VALIDATION_RETURNS_SCHEMA_VALID_OBJECT() -> None:
     response = _action_response()
 
     assert validate_response(response) == response
+
+
+def test_TEST_RESPONSE_VALIDATION_REJECTS_NON_OBJECT_OUTPUT() -> None:
+    with pytest.raises(ActionValidationError) as error:
+        validate_response(None)
+
+    assert error.value.code == "INVALID_RESPONSE"
+
+
+def test_TEST_ACTION_VALIDATION_REJECTS_NAIVE_ACTION_DATETIME() -> None:
+    request = validate_request(_raw_request())
+    response = _action_response(datetime_value="2026-11-20T18:00:00")
+
+    with pytest.raises(ActionValidationError) as error:
+        validate_action(request, response)
+
+    assert error.value.code == "INVALID_RESPONSE_SCHEMA"
 
 
 def test_TEST_ACTION_VALIDATION_REQUIRES_UNIQUE_EXISTING_TARGET() -> None:

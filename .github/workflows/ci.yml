@@ -45,9 +45,21 @@ jobs:
       - name: Install Part 1B and development dependencies
         working-directory: PART-1B
         run: python -m pip install -e ".[dev]"
-      - name: Run offline Part 1B tests
+      - name: Run Part 1B formatting check
         working-directory: PART-1B
-        run: python -m pytest
+        run: python -m ruff format --check src tests
       - name: Run Part 1B lint
         working-directory: PART-1B
         run: python -m ruff check .
+      - name: Run Part 1B type check
+        working-directory: PART-1B
+        run: python -m mypy src/reminder_agent
+      - name: Run offline Part 1B tests and core coverage gate
+        working-directory: PART-1B
+        run: python -m pytest --cov --cov-branch --cov-report=term-missing
+      - name: Run Part 1B security checks
+        working-directory: PART-1B
+        run: |
+          python -m bandit -q -r src/reminder_agent
+          detect-secrets scan -n | python -c "import json,sys; sys.exit(bool(json.load(sys.stdin).get('results')))"
+          python -m pip_audit

@@ -1,43 +1,34 @@
 # Traceability: Gemini Reminder Agent
 
-This matrix is the human-readable traceability baseline. The executable mapping is
-[`data/evaluation/traceability.json`](../../data/evaluation/traceability.json): each
-versioned dataset row has a stable `case_id` and `requirement_ids`, and the manifest maps
-requirements to test IDs and implementation references. The 12 repeated-call cases are
-listed explicitly under NFR-009.
+The executable mapping is [`data/evaluation/traceability.json`](../../data/evaluation/traceability.json). Dataset cases carry stable IDs and requirement IDs; the traceability test verifies every requirement against concrete case IDs, existing pytest test IDs, and current Python symbols or documentation/config anchors.
 
-Some implementation references remain planned until their corresponding modules are
-implemented. Task T021 must replace those references with verified symbols and confirm that
-every requirement resolves to real source code.
+The table below summarizes dataset coverage. Exact case IDs are discoverable from each JSONL row's `requirement_ids`; explicit repeats and harness-only cases are listed in the manifest.
 
-| Requirement | Story / acceptance | Planned evaluation IDs | Planned tests | Planned implementation |
-|---|---|---|---|---|
-| FR-001 | US-001..US-003, AC-001..AC-008 | `EV-INTENT-*` | `TEST-INTENT-*` | `prompt.build_request`, `evaluation.score_semantics` |
-| FR-002 | US-001, AC-001..AC-002 | `EV-CREATE-*` | `TEST-CREATE-*` | `prompt.build_request`, `validation.validate_action` |
-| FR-003 | US-002, AC-003, AC-005 | `EV-RESCHEDULE-*` | `TEST-RESCHEDULE-*` | `validation.validate_target` |
-| FR-004 | US-002, AC-004..AC-005 | `EV-SNOOZE-*` | `TEST-SNOOZE-*` | `validation.validate_datetime` |
-| FR-005 | US-001..US-003, AC-002, AC-005..AC-006 | `EV-CLARIFY-*` | `TEST-CLARIFICATION-*` | `validation.validate_action` |
-| FR-006 | AC-009 | `EV-SCHEMA-*` | `TEST-OUTPUT-*` | `output.serialize_response` |
-| FR-007 | AC-009 | `EV-SCHEMA-*` | `TEST-SCHEMA-*` | `validation.validate_response_schema` |
-| FR-008 | US-003, AC-006..AC-008 | `EV-PROP-*` | `TEST-VALIDATION-*` | `validation.validate_request`, `validation.validate_action` |
-| FR-009 | US-003, AC-006..AC-008, AC-012 | `EV-INVALID-*`, `EV-NO-SIDE-EFFECT-*` | `TEST-SAFE-INPUT-*` | `validation.validate_request`, `cli.run` |
-| FR-010 | AC-010 | `EV-TRACE-*` | `TEST-TRACEABILITY-*` | `evaluation.validate_traceability` |
-| FR-011 | AC-010 | `EV-HARNESS-*`, `EV-REPORT-*` | `TEST-EVALUATION-*` | `evaluation.run_evaluation`, `evaluation.write_report` |
-| FR-012 | AC-009, AC-011 | `EV-GEMINI-CALL-*` | `TEST-GEMINI-ADAPTER-*` | `gemini_client.GeminiAdapter.generate` |
-| FR-013 | AC-008..AC-009, AC-011..AC-012 | `EV-UNTRUSTED-*`, `EV-INVALID-MODEL-*` | `TEST-MODEL-BOUNDARY-*` | `prompt.build_request`, `validation.validate_action` |
-| FR-014 | AC-010..AC-011 | `EV-SECRET-*`, `EV-ERROR-REDACTION-*` | `TEST-CONFIG-PRIVACY-*` | `config.load_settings`, `evaluation.write_report` |
-| NFR-001 | AC-009 | `EV-SCHEMA-*` | `TEST-SCHEMA-THRESHOLD` | `validation.validate_response_schema` |
-| NFR-002 | AC-006..AC-009 | `EV-PROP-*` | `TEST-PROPERTY-THRESHOLD` | `validation.validate_action` |
-| NFR-003 | AC-001..AC-007 | `EV-SEMANTIC-*`, `EV-CLARIFY-*` | `TEST-SEMANTIC-THRESHOLD` | `evaluation.score_semantics` |
-| NFR-004 | AC-010 | `EV-REPORT-VERSION-*` | `TEST-REPRODUCIBILITY-*` | `evaluation.write_report` |
-| NFR-005 | AC-009..AC-010 | `EV-QUALITY-*` | `TEST-QUALITY-GATES` | CI configuration |
-| NFR-006 | AC-009 | `EV-COVERAGE-*` | `TEST-COVERAGE-*` | core validation/adapter/output modules |
-| NFR-007 | AC-008, AC-010..AC-011 | `EV-PRIVACY-*`, `EV-ERROR-REDACTION-*` | `TEST-PRIVACY-*` | `cli.run`, `evaluation.write_report` |
-| NFR-008 | AC-010 | `EV-DOC-*` | `TEST-DOCUMENTATION-*` | `specs/001-reminder-agent/` |
-| NFR-009 | AC-009 | `EV-REPEATED-CALL-*` | `TEST-NONDETERMINISM-*` | `gemini_client.GeminiAdapter`, `evaluation.run_evaluation` |
-| NFR-010 | AC-011 | `EV-CALL-BUDGET-*`, `EV-TIMEOUT-*` | `TEST-BUDGET-RETRY-*` | `config.load_settings`, `evaluation.run_evaluation` |
+| Requirement | Story / acceptance | Dataset case counts | Harness cases | Stable test IDs | Verified implementation references |
+|---|---|---|---|---|---|
+| FR-001 | US-001..US-003, AC-001..AC-008 | heldout-v1.jsonl: 4, v1.jsonl: 22 | none | `TEST_USER_STORIES_RETURN_EXPECTED_VALIDATED_ACTION_OR_CLARIFICATION`, `TEST_SEMANTIC_SCORE_ACCEPTS_EQUIVALENT_OFFSETS` | `src/reminder_agent/prompt.py::build_user_content`, `src/reminder_agent/evaluation.py::semantic_correct` |
+| FR-002 | US-001, AC-001..AC-002 | heldout-v1.jsonl: 6, v1.jsonl: 25 | none | `TEST_USER_STORIES_RETURN_EXPECTED_VALIDATED_ACTION_OR_CLARIFICATION` | `src/reminder_agent/prompt.py::build_user_content`, `src/reminder_agent/validation.py::validate_action` |
+| FR-003 | US-002, AC-003, AC-005 | heldout-v1.jsonl: 5, v1.jsonl: 20 | none | `TEST_ACTION_VALIDATION_REQUIRES_UNIQUE_EXISTING_TARGET`, `TEST_USER_STORIES_RETURN_EXPECTED_VALIDATED_ACTION_OR_CLARIFICATION` | `src/reminder_agent/validation.py::validate_action` |
+| FR-004 | US-002, AC-004..AC-005 | heldout-v1.jsonl: 5, v1.jsonl: 20 | none | `TEST_USER_STORIES_RETURN_EXPECTED_VALIDATED_ACTION_OR_CLARIFICATION` | `src/reminder_agent/validation.py::validate_action` |
+| FR-005 | US-001..US-003, AC-002, AC-005..AC-006 | heldout-v1.jsonl: 16, v1.jsonl: 64 | none | `TEST_PIPELINE_LOCALLY_CLARIFIES_INVALID_REQUESTS_WITHOUT_MODEL_CALL`, `TEST_USER_STORIES_RETURN_EXPECTED_VALIDATED_ACTION_OR_CLARIFICATION` | `src/reminder_agent/engine.py::ReminderAgent.process`, `src/reminder_agent/evaluation.py::semantic_correct` |
+| FR-006 | AC-009 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_OUTPUT_SERIALIZES_ONLY_THE_FIVE_CONTRACT_FIELDS` | `src/reminder_agent/output.py::serialize_response` |
+| FR-007 | AC-009 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_RESPONSE_VALIDATION_RETURNS_SCHEMA_VALID_OBJECT`, `TEST_SCHEMA_REJECTS_INVALID_ACTIONS` | `src/reminder_agent/validation.py::validate_response`, `src/reminder_agent/validation.py::validate_action` |
+| FR-008 | US-003, AC-006..AC-008 | heldout-v1.jsonl: 13, v1.jsonl: 44 | none | `TEST_REQUEST_VALIDATION_REJECTS_INVALID_INPUT`, `TEST_USER_STORIES_LOCALLY_REJECT_MALFORMED_OR_OVERSIZED_INPUT` | `src/reminder_agent/validation.py::validate_request`, `src/reminder_agent/validation.py::validate_action` |
+| FR-009 | US-003, AC-006..AC-008, AC-012 | heldout-v1.jsonl: 13, v1.jsonl: 44 | none | `TEST_USER_STORIES_LOCALLY_REJECT_MALFORMED_OR_OVERSIZED_INPUT`, `TEST_USER_STORIES_RETURN_EXPECTED_VALIDATED_ACTION_OR_CLARIFICATION`, `TEST_PIPELINE_REJECTS_INVALID_MODEL_ACTION_WITH_SAFE_ERROR` | `src/reminder_agent/engine.py::ReminderAgent.process`, `src/reminder_agent/cli.py::main` |
+| FR-010 | AC-010 | heldout-v1.jsonl: 1, v1.jsonl: 1 | none | `TEST_TRACEABILITY_COVERS_EVERY_FUNCTIONAL_AND_NONFUNCTIONAL_REQUIREMENT` | `src/reminder_agent/evaluation.py::validate_traceability` |
+| FR-011 | AC-010 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS`, `TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT` | `src/reminder_agent/evaluation.py::run_evaluation`, `src/reminder_agent/evaluation.py::write_report` |
+| FR-012 | AC-009, AC-011 | heldout-v1.jsonl: 18, v1.jsonl: 81 | none | `TEST_GEMINI_CALL_USES_JSON_SCHEMA_AND_POSITIVE_TEMPERATURE`, `TEST_GEMINI_REPEATED_CALLS_ARE_INDEPENDENT_AND_POSITIVE_TEMPERATURE` | `src/reminder_agent/gemini_client.py::GeminiAdapter.generate` |
+| FR-013 | AC-008..AC-009, AC-011..AC-012 | heldout-v1.jsonl: 18, v1.jsonl: 81 | none | `TEST_PROMPT_INJECTION_CASE_REMAINS_UNTRUSTED_DATA`, `TEST_PROMPT_SERIALIZES_REQUEST_AS_UNTRUSTED_DATA` | `src/reminder_agent/prompt.py::build_user_content`, `src/reminder_agent/validation.py::validate_action` |
+| FR-014 | AC-010..AC-011 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_CONFIG_LOADS_LOCAL_ENV_FILE_AND_HIDES_SECRET`, `TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT` | `src/reminder_agent/config.py::load_settings`, `src/reminder_agent/evaluation.py::write_report` |
+| NFR-001 | AC-009 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS` | `src/reminder_agent/validation.py::validate_response`, `src/reminder_agent/evaluation.py::threshold_failures` |
+| NFR-002 | AC-006..AC-009 | heldout-v1.jsonl: 13, v1.jsonl: 44 | none | `TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS` | `src/reminder_agent/validation.py::validate_action`, `src/reminder_agent/evaluation.py::threshold_failures` |
+| NFR-003 | AC-001..AC-007 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS` | `src/reminder_agent/evaluation.py::semantic_correct`, `src/reminder_agent/evaluation.py::threshold_failures` |
+| NFR-004 | AC-010 | heldout-v1.jsonl: 20, v1.jsonl: 86 | none | `TEST_EVALUATION_LOADS_VERSIONED_86_CASE_DEVELOPMENT_DATASET`, `TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT` | `src/reminder_agent/evaluation.py::load_cases`, `src/reminder_agent/evaluation.py::write_report` |
+| NFR-005 | AC-009..AC-010 | heldout-v1.jsonl: 1, v1.jsonl: 1 | `EV-HARNESS-QUALITY-GATES-001` | `TEST_CI_WORKFLOW_RUNS_REQUIRED_QUALITY_GATES` | `../.github/workflows/ci.yml::part-1b` |
+| NFR-006 | AC-009 | heldout-v1.jsonl: 1, v1.jsonl: 1 | `EV-HARNESS-COVERAGE-001` | `TEST_COVERAGE_THRESHOLD_IS_CONFIGURED` | `pyproject.toml::fail_under` |
+| NFR-007 | AC-008, AC-010..AC-011 | heldout-v1.jsonl: 13, v1.jsonl: 44 | none | `TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT` | `src/reminder_agent/cli.py::main`, `src/reminder_agent/evaluation.py::write_report` |
+| NFR-008 | AC-010 | v1.jsonl: 1 | `EV-HARNESS-DOCUMENTATION-001` | `TEST_QUICKSTART_DOCUMENTS_EVALUATION_AND_PRIVACY_REQUIREMENTS`, `TEST_TRACEABILITY_COVERS_EVERY_FUNCTIONAL_AND_NONFUNCTIONAL_REQUIREMENT` | `specs/001-reminder-agent/spec.md::Approved Decisions`, `specs/001-reminder-agent/quickstart.md::Configure Gemini locally` |
+| NFR-009 | AC-009 | none; 12 explicit repeat cases | none | `TEST_GEMINI_REPEATED_CALLS_ARE_INDEPENDENT_AND_POSITIVE_TEMPERATURE`, `TEST_EVALUATION_RUNS_130_CASES_AND_WRITES_A_PRIVATE_PASS_REPORT` | `src/reminder_agent/gemini_client.py::GeminiAdapter.generate`, `src/reminder_agent/evaluation.py::select_repeat_case_ids` |
+| NFR-010 | AC-011 | none | `EV-HARNESS-CALL-BUDGET-001` | `TEST_GEMINI_RETRIES_CANNOT_EXCEED_PROVIDER_ATTEMPT_BUDGET`, `TEST_EVALUATION_STOPS_VISIBLY_ON_EXHAUSTED_PROVIDER_BUDGET` | `src/reminder_agent/config.py::load_settings`, `src/reminder_agent/evaluation.py::run_evaluation` |
 
-**Acceptance gate**: the traceability test requires each FR/NFR to link to one or more
-concrete dataset or harness evaluation IDs, stable test IDs, and a planned implementation
-reference. Task T021 additionally verifies every reference against implemented source
-symbols before release.
+The acceptance gate fails if a requirement ID is missing, any dataset or harness case refers to an unknown requirement, a test ID does not match an existing `test_TEST_*` function, an implementation file/anchor is absent, or a Python symbol does not resolve. The offline traceability test enforces these checks before release.

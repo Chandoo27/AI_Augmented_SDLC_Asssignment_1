@@ -212,3 +212,19 @@ def test_TEST_GEMINI_REJECTS_EMPTY_OR_NON_OBJECT_OUTPUT(
         adapter.generate(_request())
 
     assert error.value.code == error_code
+
+
+def test_TEST_GEMINI_SANITIZES_RESPONSE_TEXT_ACCESS_ERRORS() -> None:
+    class BrokenResponse:
+        @property
+        def text(self) -> str:
+            raise ValueError("private response details")
+
+    adapter = GeminiAdapter(_settings(), client=FakeClient([BrokenResponse()]))
+
+    with pytest.raises(ProviderError) as error:
+        adapter.generate(_request())
+
+    assert error.value.code == "EMPTY_MODEL_RESPONSE"
+    assert error.value.attempts == 1
+    assert "private response details" not in str(error.value)

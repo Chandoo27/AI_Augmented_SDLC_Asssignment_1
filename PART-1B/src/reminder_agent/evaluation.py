@@ -1,3 +1,4 @@
+import ast
 import json
 import math
 import re
@@ -522,6 +523,13 @@ def validate_traceability(
             "INVALID_TRACEABILITY",
             "Traceability manifest must be a JSON object.",
         )
+    if manifest.get("schema_version") != "1.0.0":
+        raise EvaluationInputError(
+            "INVALID_TRACEABILITY",
+            "Traceability manifest version is unsupported.",
+        )
+    project_root = specification_path.resolve().parents[2]
+    available_test_ids = _collect_test_ids(project_root / "tests")
 
     expected_ids = set(re.findall(r"\*\*((?:FR|NFR)-\d{3})\*\*", specification))
     requirement_records = manifest.get("requirements")
@@ -540,12 +548,16 @@ def validate_traceability(
 
     case_requirements: dict[str, set[str]] = {}
     seen_case_ids: set[str] = set()
-    project_root = manifest_path.resolve().parents[2]
     for link in dataset_links.values():
-        if not isinstance(link, Mapping) or not isinstance(link.get("path"), str):
+        if (
+            not isinstance(link, Mapping)
+            or not isinstance(link.get("path"), str)
+            or link.get("case_id_field") != "case_id"
+            or link.get("requirement_ids_field") != "requirement_ids"
+        ):
             raise EvaluationInputError(
                 "INVALID_TRACEABILITY",
-                "Each traceability dataset link must include a relative path.",
+                "Each traceability dataset link must define its stable ID fields and path.",
             )
         dataset_path = project_root / link["path"]
         for case in load_cases(dataset_path):
@@ -586,15 +598,29 @@ def validate_traceability(
                     f"Harness case {harness_case_id} references unknown requirement.",
                 )
             case_requirements.setdefault(requirement_id, set()).add(harness_case_id)
-        _validate_traceability_record(record, harness_case_id)
+        _validate_traceability_record(
+            record,
+            harness_case_id,
+            project_root,
+            available_test_ids,
+        )
         seen_case_ids.add(harness_case_id)
 
     for requirement_id, record in requirement_records.items():
-        _validate_traceability_record(record, requirement_id)
+        _validate_traceability_record(
+            record,
+            requirement_id,
+            project_root,
+            available_test_ids,
+        )
         explicit_case_ids = record.get("evaluation_case_ids", [])
-        if not isinstance(explicit_case_ids, list) or any(
-            not isinstance(case_id, str) or case_id not in seen_case_ids
-            for case_id in explicit_case_ids
+        if (
+            not isinstance(explicit_case_ids, list)
+            or any(
+                not isinstance(case_id, str) or case_id not in seen_case_ids
+                for case_id in explicit_case_ids
+            )
+            or len(set(explicit_case_ids)) != len(explicit_case_ids)
         ):
             raise EvaluationInputError(
                 "UNKNOWN_EVALUATION_CASE",
@@ -786,7 +812,12 @@ def _is_property_valid(
     return True
 
 
-def _validate_traceability_record(value: object, record_id: str) -> None:
+def _validate_traceability_record(
+    value: object,
+    record_id: str,
+    project_root: Path,
+    available_test_ids: set[str],
+) -> None:
     if not isinstance(value, Mapping):
         raise EvaluationInputError(
             "INVALID_TRACEABILITY",
@@ -803,11 +834,76 @@ def _validate_traceability_record(value: object, record_id: str) -> None:
                 "INCOMPLETE_TRACEABILITY",
                 f"Traceability record {record_id} must include {field}.",
             )
+    if any(test_id not in available_test_ids for test_id in value["test_ids"]):
+        raise EvaluationInputError(
+            "UNKNOWN_TEST_ID",
+            f"Traceability record {record_id} references an unknown test ID.",
+        )
     if any("::" not in item for item in value["implementation_refs"]):
         raise EvaluationInputError(
             "INVALID_IMPLEMENTATION_REFERENCE",
             f"Traceability record {record_id} has a malformed implementation reference.",
         )
+    for reference in value["implementation_refs"]:
+        relative_path, symbol = reference.split("::", maxsplit=1)
+        source_path = (project_root / relative_path).resolve()
+        try:
+            source = source_path.read_text(encoding="utf-8")
+        except OSError as error:
+            raise EvaluationInputError(
+                "MISSING_IMPLEMENTATION_REFERENCE",
+                f"Traceability record {record_id} references a missing source file.",
+            ) from error
+        if source_path.suffix == ".py":
+            try:
+                module = ast.parse(source, filename=str(source_path))
+            except SyntaxError as error:
+                raise EvaluationInputError(
+                    "INVALID_IMPLEMENTATION_REFERENCE",
+                    f"Traceability source for {record_id} contains invalid Python syntax.",
+                ) from error
+            if not _ast_has_symbol(module.body, symbol.split(".")):
+                raise EvaluationInputError(
+                    "UNKNOWN_IMPLEMENTATION_SYMBOL",
+                    f"Traceability record {record_id} references an unknown source symbol.",
+                )
+        elif symbol.casefold() not in source.casefold():
+            raise EvaluationInputError(
+                "UNKNOWN_IMPLEMENTATION_SYMBOL",
+                f"Traceability record {record_id} references an unknown source anchor.",
+            )
+
+
+def _collect_test_ids(tests_path: Path) -> set[str]:
+    test_ids: set[str] = set()
+    for path in tests_path.rglob("test_*.py"):
+        try:
+            module = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        except (OSError, SyntaxError) as error:
+            raise EvaluationInputError(
+                "INVALID_TEST_SOURCE",
+                "Could not read or parse the test suite for traceability validation.",
+            ) from error
+        test_ids.update(
+            node.name.removeprefix("test_")
+            for node in ast.walk(module)
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name.startswith("test_TEST_")
+        )
+    return test_ids
+
+
+def _ast_has_symbol(nodes: Sequence[ast.stmt], names: list[str]) -> bool:
+    if not names:
+        return True
+    for node in nodes:
+        if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+            if node.name == names[0]:
+                if len(names) == 1:
+                    return True
+                if isinstance(node, ast.ClassDef):
+                    return _ast_has_symbol(node.body, names[1:])
+    return False
 
 
 def _response_values(value: Mapping[str, Any] | ReminderResponse) -> dict[str, Any]:

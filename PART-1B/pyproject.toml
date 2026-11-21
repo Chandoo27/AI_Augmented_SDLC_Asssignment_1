@@ -17,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 reminder-agent = "reminder_agent.cli:main"
+reminder-agent-evaluate = "reminder_agent.evaluation_cli:main"
 
 [project.optional-dependencies]
 dev = [
@@ -51,3 +52,16 @@ python_version = "3.11"
 mypy_path = "src"
 strict = true
 warn_unused_configs = true
+
+[tool.coverage.run]
+branch = true
+source = [
+    "reminder_agent.engine",
+    "reminder_agent.gemini_client",
+    "reminder_agent.output",
+    "reminder_agent.validation",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true

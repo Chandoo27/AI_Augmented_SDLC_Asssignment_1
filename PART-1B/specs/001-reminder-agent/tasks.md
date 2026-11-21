@@ -76,9 +76,9 @@ the behavior covered.
 - [x] T020 Add focused tests proving live mode issues independent positive-temperature model
   calls without asserting outputs must differ; ordinary tests remain offline
   (`FR-012`, `NFR-009`, `AC-009`).
-- [ ] T021 Complete requirement-to-test/case/source traceability and verify each requirement
+- [x] T021 Complete requirement-to-test/case/source traceability and verify each requirement
   has an implementation reference (`FR-010..FR-011`, `AC-010`).
-- [ ] T022 Write quickstart and release documentation for local credentials, model config,
+- [x] T022 Write quickstart and release documentation for local credentials, model config,
   privacy, tests, live evaluation, budgets, thresholds, and report contents
   (`FR-014`, `NFR-004..NFR-008`, `AC-010..AC-011`).
 - [ ] T023 Run unit/contract/property tests, offline harness tests, configured quality and
