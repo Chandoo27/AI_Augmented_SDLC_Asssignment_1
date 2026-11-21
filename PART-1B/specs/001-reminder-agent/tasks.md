@@ -19,10 +19,10 @@ the behavior covered.
 
 ## Phase 1 — Testable Contract and Evaluation Baseline
 
-- [ ] T003 [P] Create the Python package/test/data layout, dependency configuration, CI, and
-  ignore rules; load local `PART-1B/.env` without adding either student `harness-log.md`
-  (`NFR-005`, `NFR-008`, `FR-014`).
-- [ ] T004 [P] Add canonical schema contract tests for exact fields, action/clarification
+- [x] T003 [P] Create the Python package/test/data layout, dependency configuration, CI, and
+  `.env` example/ignore setup for future local loading without adding either student
+  `harness-log.md` (`NFR-005`, `NFR-008`, `FR-014`).
+- [x] T004 [P] Add canonical schema contract tests for exact fields, action/clarification
   invariants, datetime format, and invalid/extra fields (`FR-006`, `FR-007`, `NFR-001`,
   `AC-009`).
 - [ ] T005 [P] Define typed request, context, response, model configuration, evaluation case,
