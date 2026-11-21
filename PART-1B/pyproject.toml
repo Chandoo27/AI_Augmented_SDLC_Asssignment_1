@@ -15,6 +15,9 @@ dependencies = [
     "tzdata>=2024.1",
 ]
 
+[project.scripts]
+reminder-agent = "reminder_agent.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "bandit>=1.7,<2",

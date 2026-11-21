@@ -58,14 +58,14 @@ the behavior covered.
 
 ## Phase 3 — User Stories
 
-- [ ] T015 [US-001] Add create-request tests and synthetic evaluation cases for explicit and
+- [x] T015 [US-001] Add create-request tests and synthetic evaluation cases for explicit and
   relative dates, task extraction, missing values, ambiguity, and time-zone boundaries
   (`FR-001..FR-002`, `AC-001..AC-002`).
-- [ ] T016 [US-002] Add reschedule/snooze tests and cases for unique, missing, and ambiguous
+- [x] T016 [US-002] Add reschedule/snooze tests and cases for unique, missing, and ambiguous
   targets, replacement times, and durations (`FR-003..FR-005`, `AC-003..AC-005`).
-- [ ] T017 [US-003] Add clarification, unsupported-input, malformed-input, prompt-injection,
+- [x] T017 [US-003] Add clarification, unsupported-input, malformed-input, prompt-injection,
   and no-action property tests (`FR-005`, `FR-008..FR-009`, `AC-006..AC-008`).
-- [ ] T018 Add an end-to-end single-request CLI using the validated Gemini pipeline and
+- [x] T018 Add an end-to-end single-request CLI using the validated Gemini pipeline and
   explicit operational-error exit behavior (`FR-001..FR-009`, `FR-012..FR-014`).
 
 ## Phase 4 — Evaluation and Release
