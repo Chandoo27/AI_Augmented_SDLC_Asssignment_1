@@ -43,7 +43,7 @@ implementation. Tests and harness rules are protected once the student approves 
 - [x] T012 Implement local JSON persistence with atomic writes, safe error handling, and
   serialized read-modify-write updates (US-001, US-003, FR-004, FR-009, FR-011;
   AC-011–AC-013, AC-017).
-- [ ] T013 Implement app construction and common HTTP error handling without exposing internal
+- [x] T013 Implement app construction and common HTTP error handling without exposing internal
   paths or stack traces (US-001, FR-010–FR-011; AC-006, AC-012–AC-013).
 - [ ] T014 Implement CRUD service operations and REST routes, preserving partial-update and
   not-found behavior (US-001, FR-001–FR-005, FR-010–FR-011; AC-001–AC-007, AC-012).
