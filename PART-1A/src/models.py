@@ -22,6 +22,10 @@ class TaskStatus(StrEnum):
     COMPLETED = "Completed"
 
 
+class TaskSort(StrEnum):
+    PRIORITY = "priority"
+
+
 class TaskCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -96,6 +100,26 @@ class TaskUpdate(BaseModel):
         if any(getattr(self, name) is None for name in self.model_fields_set):
             raise ValueError("Editable fields cannot be null")
         return self
+
+
+class TaskFilters(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    tags: TagList | None = None
+    sort: TaskSort | None = None
+
+    @field_validator("tags", mode="before")
+    @classmethod
+    def split_and_trim_tags(cls, values: Any) -> Any:
+        if not isinstance(values, list):
+            return values
+        parts: list[Any] = []
+        for value in values:
+            if isinstance(value, str):
+                parts.extend(part.strip() for part in value.split(","))
+            else:
+                parts.append(value)
+        return parts
 
 
 class Task(BaseModel):

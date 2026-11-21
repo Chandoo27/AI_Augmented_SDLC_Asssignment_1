@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
-from src.models import Task, TaskCreate, TaskStatus, TaskUpdate
+from src.models import Priority, Task, TaskCreate, TaskFilters, TaskSort, TaskStatus, TaskUpdate
 from src.storage import JsonTaskStore, TaskNotFound
 
 
@@ -28,8 +28,23 @@ class TaskService:
 
         return self.store.transact(append)
 
-    def list_tasks(self) -> list[Task]:
-        return self.store.list_tasks()
+    def list_tasks(self, filters: TaskFilters | None = None) -> list[Task]:
+        tasks = self.store.list_tasks()
+        if filters is None:
+            return tasks
+
+        if filters.tags is not None:
+            requested_tags = {tag.casefold() for tag in filters.tags}
+            tasks = [
+                task
+                for task in tasks
+                if requested_tags.intersection(tag.casefold() for tag in task.tags)
+            ]
+
+        if filters.sort is TaskSort.PRIORITY:
+            tasks.sort(key=self.priority_key)
+
+        return tasks
 
     def get_task(self, task_id: UUID) -> Task:
         return self.store.get_task(task_id)
@@ -58,3 +73,12 @@ class TaskService:
             raise TaskNotFound
 
         self.store.transact(delete)
+
+    @staticmethod
+    def priority_key(task: Task) -> tuple[int, datetime, str]:
+        priority_order = {
+            Priority.HIGH: 0,
+            Priority.MEDIUM: 1,
+            Priority.LOW: 2,
+        }
+        return priority_order[task.priority], task.created_at, str(task.id)

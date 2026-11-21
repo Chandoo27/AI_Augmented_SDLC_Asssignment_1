@@ -50,7 +50,7 @@ implementation. Tests and harness rules are protected once the student approves 
 
 ## Phase 4: Implement US-002 — Organize and Find Tasks
 
-- [ ] T015 Implement match-any tag filtering and deterministic priority/date/ID ordering,
+- [x] T015 Implement match-any tag filtering and deterministic priority/date/ID ordering,
   including combined filters and sort (US-002, FR-003, FR-007–FR-008, FR-010;
   AC-009–AC-010).
 

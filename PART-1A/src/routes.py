@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, Query, Request, Response, status
 
-from src.models import ErrorResponse, Task, TaskCreate, TaskUpdate
+from src.models import ErrorResponse, Task, TaskCreate, TaskFilters, TaskUpdate
 from src.services import TaskService
 
 router = APIRouter()
@@ -39,8 +39,11 @@ def create_task(
     response_model=list[Task],
     responses={422: ERROR_RESPONSES[422], 500: ERROR_RESPONSES[500]},
 )
-def list_tasks(service: Annotated[TaskService, Depends(get_task_service)]) -> list[Task]:
-    return service.list_tasks()
+def list_tasks(
+    filters: Annotated[TaskFilters, Query()],
+    service: Annotated[TaskService, Depends(get_task_service)],
+) -> list[Task]:
+    return service.list_tasks(filters)
 
 
 @router.get(
