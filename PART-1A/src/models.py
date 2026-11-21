@@ -105,8 +105,16 @@ class TaskUpdate(BaseModel):
 class TaskFilters(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    tags: TagList | None = None
-    sort: TaskSort | None = None
+    tags: TagList | None = Field(
+        default=None,
+        description=(
+            "Repeat tags for match-any filtering; comma-separated values are also accepted."
+        ),
+    )
+    sort: TaskSort | None = Field(
+        default=None,
+        description="Sort by priority, then creation date and ID.",
+    )
 
     @field_validator("tags", mode="before")
     @classmethod

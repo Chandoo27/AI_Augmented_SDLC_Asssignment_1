@@ -4,7 +4,7 @@ This repository is being built in specification-first milestones for Assignment 
 
 ## Parts
 
-- **Part 1A** — deterministic Smart Todo API; approved specification, plan, test/harness baseline, and implementation in progress.
+- **Part 1A** — deterministic Smart Todo API; implementation complete, release documentation and verification in progress.
 - **Part 1B** — non-deterministic Natural Language Reminder Agent using Gemini; specification pending.
 
 Each part will keep its requirements, design, tests, implementation, and validation evidence
@@ -15,4 +15,5 @@ will author them after implementation and verification are complete.
 
 The repository setup and Part 1A planning milestones are committed. The student approved the
 Part 1A specification, plan, task breakdown, and test/harness baseline. The baseline is tagged
-`part-1a-pre-implementation`; application implementation is now in progress.
+`part-1a-pre-implementation`; Part 1A implementation is complete and release verification is
+underway.

@@ -1,8 +1,8 @@
 # Tasks: Smart Todo API
 
 **Input**: Approved planning input in this directory (`spec.md`, `plan.md`)  
-**Status**: T001–T010 are complete, including student approval and the protected baseline.
-Application implementation is starting.
+**Status**: T001–T016 are complete, including the approved baseline and all three stories.
+Release documentation and verification tasks T017–T018 are in progress.
 **Rule**: Additions or changes to requirements must be approved in `spec.md` before
 implementation. Tests and harness rules are protected once the student approves the baseline.
 
