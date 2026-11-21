@@ -32,7 +32,7 @@ the behavior covered.
 - [x] T007 [P] Create synthetic versioned development and held-out datasets with fixed
   temporal context and operation/clarification coverage (`US-001..US-003`, `FR-001..FR-005`,
   `NFR-003`, `NFR-004`).
-- [ ] T008 Add deterministic evaluator tests for separate schema/property/semantic metrics,
+- [x] T008 Add deterministic evaluator tests for separate schema/property/semantic metrics,
   operation denominators, repeat runs, call budgets, safe reports, and threshold failures
   (`FR-011`, `NFR-001..NFR-004`, `NFR-009..NFR-010`, `AC-010`).
 

@@ -1,13 +1,19 @@
 import json
 import re
 from collections.abc import Mapping, Sequence
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
-from reminder_agent.models import EvaluationCase, ReminderResponse
+from reminder_agent.models import (
+    EvaluationCase,
+    EvaluationReport,
+    EvaluationResult,
+    ReminderResponse,
+)
 from reminder_agent.validation import (
     SCHEMA,
     ActionValidationError,
@@ -46,12 +52,32 @@ TASK_QUESTION_TERMS = {
     "what task should i",
     "which task should i remind",
 }
+DEFAULT_THRESHOLDS = {
+    "schema_validity": 1.0,
+    "property_validity": 1.0,
+    "overall_semantic_accuracy": 0.95,
+    "per_operation_semantic_accuracy": 0.9,
+    "clarification_accuracy": 1.0,
+}
 
 
 class EvaluationInputError(ValueError):
     def __init__(self, code: str, message: str) -> None:
         super().__init__(message)
         self.code = code
+
+
+@dataclass(frozen=True)
+class EvaluationMetrics:
+    total_cases: int
+    total_runs: int
+    schema_valid_rate: float
+    property_valid_rate: float
+    semantic_accuracy: float
+    operation_metrics: Mapping[str, Mapping[str, float]]
+    clarification_required_count: int
+    clarification_correct_count: int
+    clarification_accuracy: float
 
 
 def load_cases(path: Path, min_cases: int = 1) -> tuple[EvaluationCase, ...]:
@@ -125,6 +151,168 @@ def select_repeat_case_ids(
             )
         selected.extend(chosen)
     return tuple(selected)
+
+
+def plan_runs(
+    cases: Sequence[EvaluationCase],
+    repeated_case_ids: Sequence[str] = (),
+    runs_per_repeated_case: int = 3,
+    max_runs: int = 130,
+) -> tuple[tuple[str, int], ...]:
+    if max_runs < 1:
+        raise EvaluationInputError("INVALID_RUN_BUDGET", "Maximum run count must be positive.")
+    if runs_per_repeated_case < 2:
+        raise EvaluationInputError(
+            "INVALID_REPEAT_COUNT",
+            "Repeated cases must have at least two total runs.",
+        )
+    case_ids = [case.case_id for case in cases]
+    if len(set(case_ids)) != len(case_ids):
+        raise EvaluationInputError("DUPLICATE_CASE_ID", "Evaluation cases must have unique IDs.")
+    repeated_ids = tuple(repeated_case_ids)
+    if len(set(repeated_ids)) != len(repeated_ids) or not set(repeated_ids) <= set(case_ids):
+        raise EvaluationInputError(
+            "INVALID_REPEAT_SELECTION",
+            "Repeated case IDs must be unique and present in the evaluation cases.",
+        )
+
+    planned = tuple(
+        (case.case_id, run_index)
+        for case in cases
+        for run_index in range(
+            1,
+            runs_per_repeated_case + 1 if case.case_id in repeated_ids else 2,
+        )
+    )
+    if len(planned) > max_runs:
+        raise EvaluationInputError(
+            "RUN_BUDGET_EXCEEDED",
+            "Planned evaluation runs exceed the configured run budget.",
+        )
+    return planned
+
+
+def compute_metrics(
+    results: Sequence[EvaluationResult],
+    cases: Sequence[EvaluationCase],
+) -> EvaluationMetrics:
+    if not results or not cases:
+        raise EvaluationInputError(
+            "EMPTY_EVALUATION",
+            "Evaluation metrics require at least one case and one result.",
+        )
+    cases_by_id = {case.case_id: case for case in cases}
+    if len(cases_by_id) != len(cases):
+        raise EvaluationInputError("DUPLICATE_CASE_ID", "Evaluation cases must have unique IDs.")
+    results_by_operation: dict[str, list[EvaluationResult]] = {}
+    clarification_results: list[EvaluationResult] = []
+    seen_runs: set[tuple[str, int]] = set()
+    for result in results:
+        case = cases_by_id.get(result.case_id)
+        if case is None:
+            raise EvaluationInputError(
+                "UNKNOWN_RESULT_CASE",
+                f"Result references unknown case {result.case_id}.",
+            )
+        if result.operation != case.operation or result.category != case.category:
+            raise EvaluationInputError(
+                "RESULT_CASE_MISMATCH",
+                f"Result metadata does not match case {result.case_id}.",
+            )
+        if result.run_index < 1 or (result.case_id, result.run_index) in seen_runs:
+            raise EvaluationInputError(
+                "DUPLICATE_RUN",
+                f"Case {result.case_id} has an invalid or duplicate run index.",
+            )
+        seen_runs.add((result.case_id, result.run_index))
+        results_by_operation.setdefault(case.operation, []).append(result)
+        if case.expected.needs_clarification:
+            clarification_results.append(result)
+
+    total_runs = len(results)
+    schema_valid_rate = sum(result.schema_valid for result in results) / total_runs
+    property_valid_rate = sum(result.property_valid for result in results) / total_runs
+    semantic_accuracy = sum(result.semantic_correct for result in results) / total_runs
+    operation_metrics = {
+        operation: {
+            "run_count": float(len(operation_results)),
+            "schema_valid_rate": sum(item.schema_valid for item in operation_results)
+            / len(operation_results),
+            "property_valid_rate": sum(item.property_valid for item in operation_results)
+            / len(operation_results),
+            "semantic_accuracy": sum(item.semantic_correct for item in operation_results)
+            / len(operation_results),
+        }
+        for operation, operation_results in sorted(results_by_operation.items())
+    }
+    clarification_required_count = len(clarification_results)
+    clarification_correct_count = sum(item.semantic_correct for item in clarification_results)
+    clarification_accuracy = (
+        clarification_correct_count / clarification_required_count
+        if clarification_required_count
+        else 0.0
+    )
+    return EvaluationMetrics(
+        total_cases=len(cases),
+        total_runs=total_runs,
+        schema_valid_rate=schema_valid_rate,
+        property_valid_rate=property_valid_rate,
+        semantic_accuracy=semantic_accuracy,
+        operation_metrics=operation_metrics,
+        clarification_required_count=clarification_required_count,
+        clarification_correct_count=clarification_correct_count,
+        clarification_accuracy=clarification_accuracy,
+    )
+
+
+def threshold_failures(
+    metrics: EvaluationMetrics,
+    thresholds: Mapping[str, float] = DEFAULT_THRESHOLDS,
+) -> tuple[str, ...]:
+    observed = {
+        "schema_validity": metrics.schema_valid_rate,
+        "property_validity": metrics.property_valid_rate,
+        "overall_semantic_accuracy": metrics.semantic_accuracy,
+        "clarification_accuracy": metrics.clarification_accuracy,
+    }
+    failures: list[str] = []
+    for name, value in observed.items():
+        threshold = thresholds.get(name)
+        if threshold is None or value < threshold:
+            failures.append(name)
+    operation_threshold = thresholds.get("per_operation_semantic_accuracy")
+    if operation_threshold is None:
+        failures.append("per_operation_semantic_accuracy")
+    elif any(
+        operation not in metrics.operation_metrics
+        or metrics.operation_metrics[operation]["semantic_accuracy"] < operation_threshold
+        for operation in VALID_OPERATIONS
+    ):
+        failures.append("per_operation_semantic_accuracy")
+    return tuple(sorted(set(failures)))
+
+
+def write_report(report: EvaluationReport, path: Path) -> None:
+    if report.command not in {"development", "held-out", "combined"}:
+        raise EvaluationInputError(
+            "UNSAFE_REPORT_COMMAND",
+            "Report command must be a recognized evaluation mode.",
+        )
+    for result in report.results:
+        if not re.fullmatch(r"EV-[A-Z0-9-]+", result.case_id) or any(
+            not re.fullmatch(r"[A-Z0-9_]+", code) for code in result.failure_codes
+        ):
+            raise EvaluationInputError(
+                "UNSAFE_REPORT_RESULT",
+                "Report results must contain only stable case IDs and safe error codes.",
+            )
+    payload = asdict(report)
+    payload["created_at"] = report.created_at.isoformat()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def validate_traceability(

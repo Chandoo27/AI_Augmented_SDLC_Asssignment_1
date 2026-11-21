@@ -64,6 +64,11 @@ class GeminiAdapter:
             )
         )
         self._sleep = sleep
+        self._provider_attempts = 0
+
+    @property
+    def provider_attempts(self) -> int:
+        return self._provider_attempts
 
     def generate(self, request: ReminderRequest) -> ModelGeneration:
         config = types.GenerateContentConfig(
@@ -75,6 +80,12 @@ class GeminiAdapter:
         contents = build_user_content(request)
 
         for attempt in range(1, self._settings.max_attempts + 1):
+            if self._provider_attempts >= self._settings.max_calls:
+                raise ProviderError(
+                    "CALL_BUDGET_EXHAUSTED",
+                    "Gemini provider-attempt budget is exhausted.",
+                )
+            self._provider_attempts += 1
             try:
                 response = self._client.models.generate_content(
                     model=self._settings.model,

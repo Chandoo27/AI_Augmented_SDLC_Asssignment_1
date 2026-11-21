@@ -54,7 +54,7 @@
       "implementation_refs": ["src/reminder_agent/evaluation.py::validate_traceability"]
     },
     "FR-011": {
-      "test_ids": ["TEST_EVALUATION_METRICS", "TEST_EVALUATION_THRESHOLDS"],
+      "test_ids": ["TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS", "TEST_EVALUATION_PLANS_130_RUNS_AND_ENFORCES_RUN_BUDGET"],
       "implementation_refs": ["src/reminder_agent/evaluation.py::run_evaluation", "src/reminder_agent/evaluation.py::write_report"]
     },
     "FR-012": {
@@ -70,19 +70,19 @@
       "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-001": {
-      "test_ids": ["TEST_SCHEMA_VALIDITY_THRESHOLD"],
+      "test_ids": ["TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS"],
       "implementation_refs": ["src/reminder_agent/validation.py::validate_response", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
     },
     "NFR-002": {
-      "test_ids": ["TEST_PROPERTY_VALIDITY_THRESHOLD"],
+      "test_ids": ["TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS"],
       "implementation_refs": ["src/reminder_agent/validation.py::validate_action", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
     },
     "NFR-003": {
-      "test_ids": ["TEST_SEMANTIC_THRESHOLDS", "TEST_CLARIFICATION_ACCURACY"],
+      "test_ids": ["TEST_EVALUATION_REPORTS_SEPARATE_METRICS_AND_OPERATION_DENOMINATORS"],
       "implementation_refs": ["src/reminder_agent/evaluation.py::semantic_correct", "src/reminder_agent/evaluation.py::evaluate_thresholds"]
     },
     "NFR-004": {
-      "test_ids": ["TEST_VERSIONED_REPORT"],
+      "test_ids": ["TEST_EVALUATION_LOADS_VERSIONED_86_CASE_DEVELOPMENT_DATASET", "TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT"],
       "implementation_refs": ["src/reminder_agent/evaluation.py::load_cases", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-005": {
@@ -94,7 +94,7 @@
       "implementation_refs": ["pyproject.toml::pytest-cov"]
     },
     "NFR-007": {
-      "test_ids": ["TEST_PRIVACY_REDACTION"],
+      "test_ids": ["TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT"],
       "implementation_refs": ["src/reminder_agent/cli.py::run", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-008": {
@@ -120,7 +120,7 @@
       ]
     },
     "NFR-010": {
-      "test_ids": ["TEST_PROVIDER_ATTEMPT_BUDGET", "TEST_TIMEOUT_AND_RETRY_LIMITS"],
+      "test_ids": ["TEST_GEMINI_RETRIES_CANNOT_EXCEED_PROVIDER_ATTEMPT_BUDGET", "TEST_GEMINI_CALLS_SHARE_PROVIDER_ATTEMPT_BUDGET"],
       "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::run_evaluation"]
     }
   },

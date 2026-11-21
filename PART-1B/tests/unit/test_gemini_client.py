@@ -133,6 +133,31 @@ def test_TEST_GEMINI_RETRIES_TRANSIENT_PROVIDER_FAILURES_ONLY() -> None:
     assert sleeps == [1]
 
 
+def test_TEST_GEMINI_RETRIES_CANNOT_EXCEED_PROVIDER_ATTEMPT_BUDGET() -> None:
+    client = FakeClient([errors.APIError(429, {}), _model_response()])
+    adapter = GeminiAdapter(_settings(max_calls=1), client=client, sleep=lambda _: None)
+
+    with pytest.raises(ProviderError) as error:
+        adapter.generate(_request())
+
+    assert error.value.code == "CALL_BUDGET_EXHAUSTED"
+    assert adapter.provider_attempts == 1
+    assert len(client.models.calls) == 1
+
+
+def test_TEST_GEMINI_CALLS_SHARE_PROVIDER_ATTEMPT_BUDGET() -> None:
+    client = FakeClient([_model_response(), _model_response()])
+    adapter = GeminiAdapter(_settings(max_calls=1), client=client)
+
+    adapter.generate(_request())
+    with pytest.raises(ProviderError) as error:
+        adapter.generate(_request())
+
+    assert error.value.code == "CALL_BUDGET_EXHAUSTED"
+    assert adapter.provider_attempts == 1
+    assert len(client.models.calls) == 1
+
+
 def test_TEST_GEMINI_DOES_NOT_RETRY_AUTHORIZATION_FAILURES() -> None:
     client = FakeClient([errors.APIError(403, {})])
     adapter = GeminiAdapter(_settings(), client=client, sleep=lambda _: None)
