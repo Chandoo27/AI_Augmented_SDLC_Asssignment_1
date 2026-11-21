@@ -4,13 +4,13 @@
 
 - **Date:** 2026-11-21
 - **Environment:** Windows, Python 3.14.7
-- **Status:** Offline verification passed. Three combined live attempts stopped at the
+- **Status:** Offline verification passed. Four combined live attempts stopped at the
   configured provider-attempt ceiling; live acceptance remains incomplete.
 
 ## Offline verification results
 
-- **Tests:** 116 passed.
-- **Core coverage:** 95.54%, above the configured 90% minimum.
+- **Tests:** 120 passed.
+- **Core coverage:** 94.92%, above the configured 90% minimum.
 - **Ruff formatting:** Passed.
 - **Ruff lint:** Passed.
 - **mypy:** Passed.
@@ -41,32 +41,34 @@ accuracy.
   least 95% overall semantic accuracy; at least 90% semantic accuracy for each operation;
   and 100% clarification correctness.
 
-Three combined attempts were made on 2026-11-21 with the approved 140 provider-attempt
+Four combined attempts were made on 2026-11-21 with the approved 140 provider-attempt
 ceiling. All exited with `CALL_BUDGET_EXHAUSTED` before the planned evaluation completed.
-The first two attempts did not write reports. The third, using the instrumented runner, wrote
-`evidence/evaluation-report.incomplete.json`: 97 of 130 planned runs were recorded before 140
-provider attempts were consumed. The run stopped at `EV-SNOOZE-011`, run index 1.
+The first two attempts did not write reports. The third wrote
+`evidence/evaluation-report.incomplete.json` with 97 of 130 planned runs. The fourth, using
+safe provider-error classification, wrote
+`evidence/evaluation-report-final.incomplete.json` with 111 of 130 planned runs before all 140
+provider attempts were consumed.
 
-Among the 97 recorded run results, safe failure-code occurrences were `GEMINI_RETRY_EXHAUSTED`
-(42), `INVALID_MODEL_ACTION` (3), and `SEMANTIC_MISMATCH` (9). The partial counts were 52
-schema-valid, 52 property-valid, and 43 semantically correct. The report marks threshold
-status `NOT_EVALUATED_INCOMPLETE`; these partial counts are not acceptance scores. It records
-13,807 prompt tokens and 2,820 candidate tokens from completed results only; these totals do
-not cover failed attempts or the two earlier runs. The safe retry code does not distinguish
-HTTP rate limits, server errors, or transport timeouts, so the precise cause remains unknown.
-Do not treat the planned run counts or thresholds above as observed results.
+Among the fourth attempt's 111 recorded run results, safe failure-code occurrences were
+`GEMINI_RATE_LIMIT_RETRY_EXHAUSTED` (22), `GEMINI_SERVER_RETRY_EXHAUSTED` (1),
+`GEMINI_TIMEOUT_RETRY_EXHAUSTED` (1), `INVALID_MODEL_ACTION` (5), and
+`SEMANTIC_MISMATCH` (18). Its partial counts were 82 schema-valid, 82 property-valid, and 64
+semantically correct. The report marks threshold status `NOT_EVALUATED_INCOMPLETE`; these
+partial counts are not acceptance scores. It records 22,632 prompt tokens and 4,494 candidate
+tokens from completed results only; these do not cover failed attempts or previous runs.
 
 A separately authorized diagnostic request between the first and second combined attempts
-succeeded in one provider attempt, and its response passed local action validation. The three
-combined attempts and the diagnostic used 421 provider attempts in total. The diagnostic
-confirms that a single request can reach the provider; it is not part of the evaluation corpus
-and does not replace the required live development/held-out metrics or identify why the
-combined runs exhausted their budgets.
+succeeded in one provider attempt, and its response passed local action validation. The four
+combined attempts and diagnostic used 561 provider attempts in total. The diagnostic confirms
+that a single request can reach the provider; it is not part of the evaluation corpus and does
+not replace the required live development/held-out metrics. The latest report identifies
+rate-limit retries as the largest categorized failure group, but the incomplete run does not
+establish release accuracy or threshold status.
 
 ## Outcome and remaining work
 
 The offline tests and configured local quality/security checks passed, but no combined live
 run produced complete acceptance evidence. The diagnostic was successful but does not satisfy
-release criteria. Task T023 remains open until the retry failures are diagnosed and the
-approved development and held-out evaluation completes with a privacy-safe report whose
+release criteria. Task T023 remains open until provider rate-limit failures are resolved and
+the approved development and held-out evaluation completes with a privacy-safe report whose
 actual metrics meet the thresholds. This log does not claim Part 1B release acceptance.

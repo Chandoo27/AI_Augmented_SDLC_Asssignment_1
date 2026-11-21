@@ -85,8 +85,8 @@ the behavior covered.
   security checks, then the approved live development and held-out evaluation; record actual
   results in release evidence and update the human-readable harness log
   (`NFR-001..NFR-010`, `AC-001..AC-012`).
-  Three 2026-11-21 combined live attempts exhausted the 140-provider-attempt ceiling. The
-  instrumented third attempt recorded 97/130 runs and safe retry/error-code summaries, but
+  Four 2026-11-21 combined live attempts exhausted the 140-provider-attempt ceiling. The
+  instrumented fourth attempt recorded 111/130 runs and safe retry/error-code summaries, but
   thresholds were not evaluated; a one-attempt diagnostic succeeded separately.
 
 ## Dependency Order
