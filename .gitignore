@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Student-authored assignment evidence; keep these outside Git.
+/PART-1A/harness-log.md
+/PART-1B/harness-log.md
