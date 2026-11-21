@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from src.models import ErrorCode, ErrorDetail, ErrorResponse
+from src.routes import router
 from src.storage import JsonTaskStore, PersistenceError, TaskNotFound
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ def create_app(data_file: Path | None = None) -> FastAPI:
     configured_path = data_file or Path(os.environ.get("SMART_TODO_DATA_FILE", "data/tasks.json"))
     application = FastAPI(title="Smart Todo API", version="1.0.0")
     application.state.store = JsonTaskStore(configured_path)
+    application.include_router(router)
 
     @application.exception_handler(RequestValidationError)
     async def validation_error_handler(
