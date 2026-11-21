@@ -1,0 +1,33 @@
+name: Assignment validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  part-1a:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Part 1A and development dependencies
+        working-directory: PART-1A
+        run: python -m pip install -e ".[dev]"
+      - name: Run the Part 1A harness
+        working-directory: PART-1A
+        run: python scripts/run_harness.py
+      - name: Preserve harness results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: part-1a-harness-${{ matrix.python-version }}
+          path: PART-1A/evidence/harness-runs/
+          if-no-files-found: ignore

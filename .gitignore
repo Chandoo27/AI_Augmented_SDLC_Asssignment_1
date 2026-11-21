@@ -9,6 +9,10 @@ __pycache__/
 htmlcov/
 *.egg-info/
 .mentor/
+.env
+.env.*
+!.env.example
+.envrc
 
 # Student-authored assignment evidence; keep these outside Git.
 /PART-1A/harness-log.md
