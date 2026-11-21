@@ -26,7 +26,7 @@ development/held-out datasets, executable requirement traceability, safe respons
 serialization, and deterministic offline scoring tests. No live Gemini evaluation has been
 run.
 
-The Part 1B combined live Gemini evaluation stopped at the 140-provider-attempt ceiling
-without producing a report. A separate one-attempt diagnostic succeeded but did not satisfy
-the evaluation criteria. Its release gate remains pending until a complete approved
-evaluation report is reviewed.
+Two Part 1B combined live Gemini evaluation attempts stopped at the 140-provider-attempt
+ceiling without producing a report. A separate one-attempt diagnostic succeeded but did not
+satisfy the evaluation criteria. Its release gate remains pending until the repeated failure
+is diagnosed and a complete approved evaluation report is reviewed.

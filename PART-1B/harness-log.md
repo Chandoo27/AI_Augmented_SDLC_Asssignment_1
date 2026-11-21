@@ -41,22 +41,25 @@ accuracy.
   least 95% overall semantic accuracy; at least 90% semantic accuracy for each operation;
   and 100% clarification correctness.
 
-The combined command exited with `CALL_BUDGET_EXHAUSTED` after reaching the 140 provider-attempt
-ceiling, before all planned evaluation runs completed. No evaluation report was written, so
-there are no valid aggregate metrics, token totals, or empirical Gemini accuracy results to
-report. The CLI exposed only the safe budget-exhaustion code; the cause of the attempts and
-whether any individual responses were usable cannot be determined from this run. Do not treat
-the planned run counts or thresholds above as observed results.
+Two combined attempts were made on 2026-11-21, each with the approved 140 provider-attempt
+ceiling. Both exited with `CALL_BUDGET_EXHAUSTED` before all planned evaluation runs
+completed. Neither run wrote an evaluation report, so there are no valid aggregate metrics,
+token totals, or empirical Gemini accuracy results to report. The CLI exposed only the safe
+budget-exhaustion code; it did not retain per-case details that would explain why the attempt
+budget was consumed or whether individual responses were usable. Do not treat the planned run
+counts or thresholds above as observed results.
 
-A separately authorized diagnostic request then succeeded in one provider attempt, and its
-response passed local action validation. This confirms that a single request can reach the
-provider; it is not part of the evaluation corpus and does not replace the required live
-development/held-out metrics or identify why the combined run exhausted its budget.
+A separately authorized diagnostic request between the two runs succeeded in one provider
+attempt, and its response passed local action validation. The two combined attempts and the
+diagnostic used 281 provider attempts in total. The diagnostic confirms that a single request
+can reach the provider; it is not part of the evaluation corpus and does not replace the
+required live development/held-out metrics or identify why both combined runs exhausted
+their budgets.
 
 ## Outcome and remaining work
 
-The offline tests and configured local quality/security checks passed, but the live run did
-not produce acceptance evidence. The diagnostic was successful but does not satisfy release
-criteria. Task T023 remains open until the attempt-budget failure is diagnosed and the
-approved development and held-out evaluation completes with a privacy-safe report whose
+The offline tests and configured local quality/security checks passed, but neither live run
+produced acceptance evidence. The diagnostic was successful but does not satisfy release
+criteria. Task T023 remains open until the repeated attempt-budget failure is diagnosed and
+the approved development and held-out evaluation completes with a privacy-safe report whose
 actual metrics meet the thresholds. This log does not claim Part 1B release acceptance.
