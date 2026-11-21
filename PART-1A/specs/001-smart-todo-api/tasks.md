@@ -40,7 +40,7 @@ implementation. Tests and harness rules are protected once the student approves 
 
 - [x] T011 Implement typed task/request/response/error models and validation from the approved
   contract (US-001, FR-001–FR-004, FR-010–FR-011; AC-001–AC-005).
-- [ ] T012 Implement local JSON persistence with atomic writes, safe error handling, and
+- [x] T012 Implement local JSON persistence with atomic writes, safe error handling, and
   serialized read-modify-write updates (US-001, US-003, FR-004, FR-009, FR-011;
   AC-011–AC-013, AC-017).
 - [ ] T013 Implement app construction and common HTTP error handling without exposing internal
