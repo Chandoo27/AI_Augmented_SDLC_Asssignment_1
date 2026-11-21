@@ -52,7 +52,7 @@ the behavior covered.
 - [x] T013 Write request/action validation tests first, then implement local
   request/time-zone/target validation and canonical response-schema validation; invalid or
   ambiguous proposals cannot become actions (`FR-005`, `FR-007..FR-009`, `AC-005..AC-009`).
-- [ ] T014 Implement JSON-only serialization for validated responses and sanitized
+- [x] T014 Implement JSON-only serialization for validated responses and sanitized
   operational errors for configuration/provider/model failures (`FR-006`, `FR-009`,
   `FR-013..FR-014`, `AC-011..AC-012`).
 

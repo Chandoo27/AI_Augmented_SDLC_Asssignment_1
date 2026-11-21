@@ -30,11 +30,11 @@
       "implementation_refs": ["src/reminder_agent/validation.py::validate_action"]
     },
     "FR-005": {
-      "test_ids": ["TEST_CLARIFICATION_REQUIRED", "TEST_CLARIFICATION_TOPIC"],
-      "implementation_refs": ["src/reminder_agent/engine.py::process_request", "src/reminder_agent/evaluation.py::semantic_correct"]
+      "test_ids": ["TEST_PIPELINE_LOCALLY_CLARIFIES_INVALID_REQUESTS_WITHOUT_MODEL_CALL", "TEST_CLARIFICATION_TOPIC"],
+      "implementation_refs": ["src/reminder_agent/engine.py::ReminderAgent.process", "src/reminder_agent/evaluation.py::semantic_correct"]
     },
     "FR-006": {
-      "test_ids": ["TEST_JSON_ONLY_OUTPUT"],
+      "test_ids": ["TEST_OUTPUT_SERIALIZES_ONLY_THE_FIVE_CONTRACT_FIELDS"],
       "implementation_refs": ["src/reminder_agent/output.py::serialize_response"]
     },
     "FR-007": {
@@ -46,8 +46,8 @@
       "implementation_refs": ["src/reminder_agent/validation.py::validate_request", "src/reminder_agent/validation.py::validate_action"]
     },
     "FR-009": {
-      "test_ids": ["TEST_INVALID_REQUEST_NO_ACTION", "TEST_NO_SIDE_EFFECTS"],
-      "implementation_refs": ["src/reminder_agent/engine.py::process_request", "src/reminder_agent/cli.py::run"]
+      "test_ids": ["TEST_PIPELINE_LOCALLY_CLARIFIES_INVALID_REQUESTS_WITHOUT_MODEL_CALL", "TEST_PIPELINE_REJECTS_INVALID_MODEL_ACTION_WITH_SAFE_ERROR"],
+      "implementation_refs": ["src/reminder_agent/engine.py::ReminderAgent.process", "src/reminder_agent/cli.py::run"]
     },
     "FR-010": {
       "test_ids": ["TEST_TRACEABILITY_COVERAGE"],
@@ -62,11 +62,11 @@
       "implementation_refs": ["src/reminder_agent/gemini_client.py::GeminiAdapter.generate"]
     },
     "FR-013": {
-      "test_ids": ["TEST_PROMPT_ISOLATION", "TEST_MODEL_OUTPUT_VALIDATION"],
+      "test_ids": ["TEST_PROMPT_SERIALIZES_REQUEST_AS_UNTRUSTED_DATA", "TEST_PIPELINE_REJECTS_INVALID_MODEL_ACTION_WITH_SAFE_ERROR"],
       "implementation_refs": ["src/reminder_agent/prompt.py::build_user_content", "src/reminder_agent/validation.py::validate_action"]
     },
     "FR-014": {
-      "test_ids": ["TEST_LOCAL_CONFIGURATION", "TEST_REPORT_PRIVACY"],
+      "test_ids": ["TEST_LOCAL_CONFIGURATION", "TEST_EVALUATION_REPORT_OMITS_REQUEST_AND_RESPONSE_CONTENT"],
       "implementation_refs": ["src/reminder_agent/config.py::load_settings", "src/reminder_agent/evaluation.py::write_report"]
     },
     "NFR-001": {
