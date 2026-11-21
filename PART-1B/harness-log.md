@@ -4,8 +4,8 @@
 
 - **Date:** 2026-11-21
 - **Environment:** Windows, Python 3.14.7
-- **Status:** Offline verification passed. The Part 1B release evaluation is incomplete because
-  the approved live Gemini development and held-out evaluations have not been run.
+- **Status:** Offline verification passed. A combined live evaluation was attempted but stopped
+  at the configured provider-attempt ceiling; live acceptance remains incomplete.
 
 ## Offline verification results
 
@@ -30,7 +30,7 @@ responses, including the planned 106-case, 130-run combined evaluation. This ver
 evaluation implementation; it is not a live Gemini evaluation and does not establish model
 accuracy.
 
-## Approved live-evaluation plan — not yet executed
+## Live evaluation attempt — incomplete
 
 - **Model:** `gemini-3.5-flash-lite`
 - **Temperature:** `0.3`
@@ -41,14 +41,17 @@ accuracy.
   least 95% overall semantic accuracy; at least 90% semantic accuracy for each operation;
   and 100% clarification correctness.
 
-No live provider calls, live evaluation report, token-usage totals, or empirical Gemini
-accuracy results are available to report. The live development and held-out evaluations must
-be run with a rotated credential configured locally. Do not treat the planned run counts or
-thresholds above as observed results.
+The combined command exited with `CALL_BUDGET_EXHAUSTED` after reaching the 140 provider-attempt
+ceiling, before all planned evaluation runs completed. No evaluation report was written, so
+there are no valid aggregate metrics, token totals, or empirical Gemini accuracy results to
+report. The CLI exposed only the safe budget-exhaustion code; the cause of the attempts and
+whether any individual responses were usable cannot be determined from this run. Do not treat
+the planned run counts or thresholds above as observed results.
 
 ## Outcome and remaining work
 
-The offline tests and configured local quality/security checks passed. Task T023 remains open
-until the approved live development and held-out evaluations are completed and their actual
-results are reviewed. This log records that limitation and does not claim Part 1B release
+The offline tests and configured local quality/security checks passed, but the live run did
+not produce acceptance evidence. Task T023 remains open until the attempt-budget failure is
+diagnosed and the approved development and held-out evaluation completes with a privacy-safe
+report whose actual metrics meet the thresholds. This log does not claim Part 1B release
 acceptance.

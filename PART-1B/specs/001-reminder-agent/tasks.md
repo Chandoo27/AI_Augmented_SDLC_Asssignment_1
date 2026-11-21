@@ -83,7 +83,10 @@ the behavior covered.
   (`FR-014`, `NFR-004..NFR-008`, `AC-010..AC-011`).
 - [ ] T023 Run unit/contract/property tests, offline harness tests, configured quality and
   security checks, then the approved live development and held-out evaluation; record actual
-  results without creating either `harness-log.md` (`NFR-001..NFR-010`, `AC-001..AC-012`).
+  results in release evidence and update the human-readable harness log
+  (`NFR-001..NFR-010`, `AC-001..AC-012`).
+  The 2026-11-21 combined live attempt exhausted the 140-provider-attempt ceiling before
+  completion; no live metrics or evaluation report are available yet.
 
 ## Dependency Order
 

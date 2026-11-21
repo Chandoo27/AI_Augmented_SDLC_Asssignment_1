@@ -8,7 +8,8 @@ This repository is being built in specification-first milestones for Assignment 
 - **Part 1B** — non-deterministic Natural Language Reminder Agent using the approved
   `gemini-3.5-flash-lite` model; configuration, local validation, provider integration,
   story flows, CLI, offline evaluation orchestration, and quickstart documentation are
-  implemented. Final release verification and the approved live evaluation remain.
+  implemented. Offline release checks pass; live release evaluation remains incomplete after
+  a combined run exhausted the configured 140-provider-attempt ceiling.
 
 Each part will keep its requirements, design, tests, implementation, and validation evidence
 together. The Part 1A harness log records its passing release gates. The Part 1B harness log
@@ -25,5 +26,6 @@ development/held-out datasets, executable requirement traceability, safe respons
 serialization, and deterministic offline scoring tests. No live Gemini evaluation has been
 run.
 
-The Part 1B live Gemini development and held-out evaluations have not been run. Its release
-gate remains pending until those approved evaluations are completed and reviewed.
+The Part 1B combined live Gemini evaluation stopped at the 140-provider-attempt ceiling
+without producing a report. Its release gate remains pending until the failure is diagnosed
+and a complete approved evaluation report is reviewed.
