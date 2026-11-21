@@ -27,8 +27,8 @@ implementation.
 
 ## Review Notes
 
-- The test cases were carried forward into this new repository and are awaiting student review
-  against the specification before the baseline checkpoint.
+- The test cases were reviewed and approved against the specification before the
+  `part-1a-pre-implementation` baseline checkpoint.
 - `FR-009` now has a test for a directory at the configured data path; malformed and unreadable
   storage errors must not be silently treated as an empty collection.
 - `FR-011` has an explicit stable error-shape test. Existing malformed-file tests verify

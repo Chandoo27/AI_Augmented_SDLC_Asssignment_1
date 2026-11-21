@@ -1,8 +1,8 @@
 # Tasks: Smart Todo API
 
 **Input**: Approved planning input in this directory (`spec.md`, `plan.md`)  
-**Status**: T001–T009 artifacts are prepared; student review and the protected baseline are
-pending. Application implementation has not started.
+**Status**: T001–T010 are complete, including student approval and the protected baseline.
+Application implementation is starting.
 **Rule**: Additions or changes to requirements must be approved in `spec.md` before
 implementation. Tests and harness rules are protected once the student approves the baseline.
 
@@ -32,7 +32,7 @@ implementation. Tests and harness rules are protected once the student approves 
   FR-009–FR-011; AC-006, AC-008, AC-011, AC-013, AC-016).
 - [x] T009 Add a repeatable 1,000-task performance check with a recorded test-machine
   description (US-002, FR-008, NFR-002; AC-015).
-- [ ] T010 Review the specification-derived tests and fail-closed harness, record approval,
+- [x] T010 Review the specification-derived tests and fail-closed harness, record approval,
   and create the protected student baseline before implementation. The runner is prepared;
   its focused tests pass. (NFR-005; AC-018).
 
