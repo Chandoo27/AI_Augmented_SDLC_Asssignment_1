@@ -4,9 +4,11 @@
 
 **Created**: 2026-11-14
 
-**Status**: Draft
+**Status**: Approved for implementation
 
-**Review status**: Student approved this draft for planning on 2026-11-21; implementation remains gated on review of the plan and harness checkpoint.
+**Review status**: Student approved this specification for planning, approved the plan and
+task breakdown, and approved the independent-test/harness baseline on 2026-11-21. The
+baseline is protected by the `part-1a-pre-implementation` tag.
 
 **Input**: User description: "Build a Smart Todo API application supporting task creation, updates, deletion, viewing, completion, tag filtering, priority sorting, and local JSON persistence."
 

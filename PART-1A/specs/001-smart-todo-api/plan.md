@@ -1,7 +1,7 @@
 # Implementation Plan: Smart Todo API
 
 **Branch**: `001-smart-todo-api` | **Spec**: [spec.md](./spec.md)  
-**Status**: Draft for student review
+**Status**: Approved for implementation on 2026-11-21
 
 ## Summary
 
@@ -52,7 +52,7 @@ Specification-derived tests + static/security gates -> harness report -> human r
 1. Derive tests from `FR-*` and `AC-*`; tests must exist before their corresponding
    implementation tasks.
 2. Keep tests, harness, thresholds, and evaluation data independent of application code.
-   The student reviews these and creates a baseline tag before implementation.
+   The student reviewed these and created the `part-1a-pre-implementation` baseline tag.
 3. Run each gate with explicit failure propagation and preserve machine-generated output.
    Do not claim a failure or repair unless it actually occurred.
 4. Run all documented checks from a fresh clone before the student records ACCEPT or REJECT.
@@ -70,8 +70,8 @@ constructed to imply work that did not happen.
 
 ## Human Checkpoints
 
-- Student reviews and approves this plan before the task list is finalized.
-- Student reviews tests and harness independence before implementation and establishes the
-  baseline tag.
+- Student approved this plan before the task list was finalized. **Done.**
+- Student approved the tests and harness and established the `part-1a-pre-implementation`
+  baseline tag. **Done.**
 - Student saves the first generation, reviews genuine harness findings, and makes the final
   ACCEPT or REJECT decision.

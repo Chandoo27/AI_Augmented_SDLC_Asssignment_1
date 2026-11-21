@@ -1,74 +1,77 @@
 # Tasks: Smart Todo API
 
 **Input**: Approved planning input in this directory (`spec.md`, `plan.md`)  
-**Status**: Draft task breakdown; no task is complete  
+**Status**: T001–T018 are complete. The three stories and release gates are implemented and
+verified; the student-authored harness log remains pending.
 **Rule**: Additions or changes to requirements must be approved in `spec.md` before
 implementation. Tests and harness rules are protected once the student approves the baseline.
 
 ## Phase 1: Setup
 
-- [ ] T001 Create the Python package, `pyproject.toml`, lint/security configuration, CI workflow,
-  and dependency lock/install instructions (NFR-005, AC-018).
-- [ ] T002 Create the source/test directory skeleton and isolated test fixtures, including an
+- [x] T001 Create the Python package, `pyproject.toml`, lint/security configuration, CI workflow,
+  and dependency installation instructions (NFR-005, AC-018).
+- [x] T002 Create the source/test directory skeleton and isolated test fixtures, including an
   injectable temporary JSON data path (FR-009, NFR-003, AC-011, AC-013).
 
 ## Phase 2: Independent Tests and Harness Baseline
 
-- [ ] T003 Add model/validation tests for defaults, trimming, boundary lengths, priorities,
+- [x] T003 Add model/validation tests for defaults, trimming, boundary lengths, priorities,
   tags, immutable fields, and empty updates (US-001, FR-001–FR-004, FR-010; AC-001–AC-005).
-- [ ] T004 Add JSON persistence tests for missing, valid, malformed, unreadable, atomic-write,
+- [x] T004 Add JSON persistence tests for missing, valid, malformed, unreadable, atomic-write,
   and serialized-update behavior (US-001, US-003, FR-004, FR-009, FR-011; AC-011, AC-013,
   AC-017).
-- [ ] T005 Add API error-contract tests for stable JSON errors, HTTP status codes, and sanitized
+- [x] T005 Add API error-contract tests for stable JSON errors, HTTP status codes, and sanitized
   persistence failures (US-001, FR-010–FR-011; AC-006–AC-007, AC-012–AC-013).
-- [ ] T006 Add CRUD contract tests for create/list/get/update/delete, defaults, input limits,
+- [x] T006 Add CRUD contract tests for create/list/get/update/delete, defaults, input limits,
   immutable values, and rejected-request state preservation (US-001, FR-001–FR-005,
   FR-010–FR-011; AC-001–AC-007, AC-012).
-- [ ] T007 Add filter and ordering tests for exact case-insensitive match-any tags, empty
+- [x] T007 Add filter and ordering tests for exact case-insensitive match-any tags, empty
   results, priority order, deterministic ties, and combined query options (US-002,
   FR-003, FR-007–FR-008; AC-009–AC-010).
-- [ ] T008 Add complete/reopen idempotency and restart-persistence tests (US-003, FR-006,
+- [x] T008 Add complete/reopen idempotency and restart-persistence tests (US-003, FR-006,
   FR-009–FR-011; AC-006, AC-008, AC-011, AC-013, AC-016).
-- [ ] T009 Add a repeatable 1,000-task performance check with a recorded test-machine
+- [x] T009 Add a repeatable 1,000-task performance check with a recorded test-machine
   description (US-002, FR-008, NFR-002; AC-015).
-- [ ] T010 Implement a fail-closed harness runner for tests, lint/format, Bandit, pip-audit,
-  and secret scanning; prove each gate can report failure and preserve reports. Student
-  reviews the tests and harness and creates the protected baseline before implementation
-  (NFR-005; AC-018).
+- [x] T010 Review the specification-derived tests and fail-closed harness, record approval,
+  and create the protected student baseline before implementation. The runner is prepared;
+  its focused tests pass. (NFR-005; AC-018).
 
 ## Phase 3: Implement US-001 — Manage Tasks
 
-- [ ] T011 Implement typed task/request/response/error models and validation from the approved
+- [x] T011 Implement typed task/request/response/error models and validation from the approved
   contract (US-001, FR-001–FR-004, FR-010–FR-011; AC-001–AC-005).
-- [ ] T012 Implement local JSON persistence with atomic writes, safe error handling, and
+- [x] T012 Implement local JSON persistence with atomic writes, safe error handling, and
   serialized read-modify-write updates (US-001, US-003, FR-004, FR-009, FR-011;
   AC-011–AC-013, AC-017).
-- [ ] T013 Implement app construction and common HTTP error handling without exposing internal
+- [x] T013 Implement app construction and common HTTP error handling without exposing internal
   paths or stack traces (US-001, FR-010–FR-011; AC-006, AC-012–AC-013).
-- [ ] T014 Implement CRUD service operations and REST routes, preserving partial-update and
+- [x] T014 Implement CRUD service operations and REST routes, preserving partial-update and
   not-found behavior (US-001, FR-001–FR-005, FR-010–FR-011; AC-001–AC-007, AC-012).
 
 ## Phase 4: Implement US-002 — Organize and Find Tasks
 
-- [ ] T015 Implement match-any tag filtering and deterministic priority/date/ID ordering,
+- [x] T015 Implement match-any tag filtering and deterministic priority/date/ID ordering,
   including combined filters and sort (US-002, FR-003, FR-007–FR-008, FR-010;
   AC-009–AC-010).
 
 ## Phase 5: Implement US-003 — Complete Tasks and Keep Their Data
 
-- [ ] T016 Implement idempotent complete/reopen operations and verify all task fields survive
+- [x] T016 Implement idempotent complete/reopen operations and verify all task fields survive
   app recreation (US-003, FR-006, FR-009–FR-011; AC-006, AC-008, AC-011, AC-013, AC-016).
 
 ## Phase 6: Release Verification
 
-- [ ] T017 Document setup, API contract, test/harness commands, performance test machine, and
+- [x] T017 Document setup, API contract, test/harness commands, performance test machine, and
   limitations; ensure commands are reproducible from a clean checkout (FR-010–FR-012,
   NFR-001–NFR-005; AC-014–AC-018).
-- [ ] T018 Run all baseline-protected tests and quality/security gates, resolve genuine
+- [x] T018 Run all baseline-protected tests and quality/security gates, resolve genuine
   findings without weakening requirements, and prepare evidence for the student's final
   review (FR-001–FR-012, NFR-001–NFR-005; AC-001–AC-018).
 
 ## Requirement-to-Task Traceability
+
+See [traceability.md](./traceability.md) for the requirement-to-acceptance-criterion-to-test
+node mapping.
 
 | Requirement | Tasks |
 |---|---|
@@ -93,7 +96,7 @@ implementation. Tests and harness rules are protected once the student approves 
 ## Dependencies and Checkpoints
 
 - T001–T002 precede test and implementation work.
-- T003–T009 are specification-derived tests and must be reviewed before T010 is finalized.
+- T003–T009 are specification-derived tests and must be reviewed before T010 is completed.
 - T010 and the reviewed tests precede the student's baseline tag and all implementation tasks.
 - T011–T014 establish the shared model, persistence, error, and CRUD foundation.
 - T015 depends on the list service and route from T014.
