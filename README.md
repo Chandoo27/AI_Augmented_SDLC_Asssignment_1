@@ -11,8 +11,8 @@ This repository is being built in specification-first milestones for Assignment 
   implemented. Final release verification and the approved live evaluation remain.
 
 Each part will keep its requirements, design, tests, implementation, and validation evidence
-together. The two `harness-log.md` files are intentionally ignored by Git because the student
-will author them after implementation and verification are complete.
+together. The Part 1A harness log records its passing release gates. The Part 1B harness log
+records offline verification and explicitly notes that live evaluation remains pending.
 
 ## Current state
 
@@ -25,5 +25,5 @@ development/held-out datasets, executable requirement traceability, safe respons
 serialization, and deterministic offline scoring tests. No live Gemini evaluation has been
 run.
 
-The student-authored harness logs for both parts remain pending and are intentionally not
-created or committed by the agent.
+The Part 1B live Gemini development and held-out evaluations have not been run. Its release
+gate remains pending until those approved evaluations are completed and reviewed.
