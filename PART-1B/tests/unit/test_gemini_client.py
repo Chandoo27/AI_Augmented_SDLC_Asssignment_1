@@ -8,7 +8,12 @@ from google import genai
 from google.genai import errors
 
 from reminder_agent.config import Settings
-from reminder_agent.gemini_client import RATE_LIMIT_WAIT_SECONDS, GeminiAdapter, ProviderError
+from reminder_agent.gemini_client import (
+    RATE_LIMIT_WAIT_SECONDS,
+    TRANSIENT_WAIT_SECONDS,
+    GeminiAdapter,
+    ProviderError,
+)
 from reminder_agent.validation import validate_request
 
 VALID_RESPONSE = {
@@ -133,14 +138,14 @@ def test_TEST_GEMINI_RETRIES_TRANSIENT_PROVIDER_FAILURES_ONLY() -> None:
     assert sleeps == [RATE_LIMIT_WAIT_SECONDS]
 
 
-def test_TEST_GEMINI_SERVER_ERROR_RETRY_STAYS_SHORT() -> None:
+def test_TEST_GEMINI_SERVER_ERROR_RETRY_WAITS_BRIEFLY() -> None:
     client = FakeClient([errors.APIError(503, {}), _model_response()])
     sleeps: list[float] = []
     adapter = GeminiAdapter(_settings(), client=client, sleep=sleeps.append)
 
     adapter.generate(_request())
 
-    assert sleeps == [1]
+    assert sleeps == [TRANSIENT_WAIT_SECONDS]
 
 
 def test_TEST_GEMINI_PACES_CALLS_TO_THE_CONFIGURED_MINIMUM_INTERVAL() -> None:

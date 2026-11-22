@@ -87,12 +87,26 @@ def test_TEST_REQUEST_VALIDATION_REJECTS_INVALID_INPUT(
     assert error.value.code == error_code
 
 
-def test_TEST_REQUEST_VALIDATION_ALLOWS_ABSENT_OPTIONAL_CONTEXT() -> None:
-    request = validate_request({"text": "Remind me at 6 PM to call the dentist."})
+def test_TEST_REQUEST_VALIDATION_ASKS_FOR_ABSENT_REFERENCE_TIME_OR_TIMEZONE() -> None:
+    with pytest.raises(RequestValidationError) as no_context:
+        validate_request({"text": "Remind me at 6 PM to call the dentist."})
+    with pytest.raises(RequestValidationError) as no_zone:
+        validate_request(
+            {
+                "text": "Remind me at 6 PM to call the dentist.",
+                "context": {"reference_time": "2026-11-19T09:00:00+05:30"},
+            }
+        )
 
-    assert request.context.reference_time is None
-    assert request.context.timezone is None
-    assert request.context.reminder_tasks == ()
+    assert no_context.value.code == "MISSING_REFERENCE_TIME"
+    assert no_zone.value.code == "MISSING_TIMEZONE"
+
+
+def test_TEST_REQUEST_VALIDATION_DEFAULTS_ABSENT_REMINDER_TASKS_TO_EMPTY() -> None:
+    raw = _raw_request()
+    del raw["context"]["reminder_tasks"]
+
+    assert validate_request(raw).context.reminder_tasks == ()
 
 
 def test_TEST_RESPONSE_VALIDATION_RETURNS_SCHEMA_VALID_OBJECT() -> None:

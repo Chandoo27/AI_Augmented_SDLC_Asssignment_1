@@ -14,6 +14,7 @@ from reminder_agent.prompt import GENERATION_SCHEMA, SYSTEM_INSTRUCTION, build_u
 
 RETRYABLE_STATUS_CODES = {408, 429, 500, 502, 503, 504}
 RATE_LIMIT_WAIT_SECONDS = 20.0
+TRANSIENT_WAIT_SECONDS = 5.0
 
 
 class ProviderError(RuntimeError):
@@ -102,7 +103,7 @@ class GeminiAdapter:
             except (errors.APIError, httpx.TransportError) as error:
                 if self._is_retryable(error):
                     if attempt < self._settings.max_attempts:
-                        self._sleep(self._retry_wait(error, attempt))
+                        self._sleep(self._retry_wait(error))
                         continue
                     raise ProviderError(
                         self._retry_failure_code(error),
@@ -135,10 +136,10 @@ class GeminiAdapter:
         self._last_attempt_at = now
 
     @staticmethod
-    def _retry_wait(error: errors.APIError | httpx.TransportError, attempt: int) -> float:
+    def _retry_wait(error: errors.APIError | httpx.TransportError) -> float:
         if isinstance(error, errors.APIError) and error.code == 429:
             return RATE_LIMIT_WAIT_SECONDS
-        return float(min(2 ** (attempt - 1), 2))
+        return TRANSIENT_WAIT_SECONDS
 
     @staticmethod
     def _is_retryable(error: errors.APIError | httpx.TransportError) -> bool:

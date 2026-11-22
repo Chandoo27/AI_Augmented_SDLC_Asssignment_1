@@ -64,6 +64,11 @@ def validate_request(value: object) -> ReminderRequest:
     reference_time = _parse_reference_time(context_value.get("reference_time"))
     timezone_name = _parse_timezone(context_value.get("timezone"))
     reminder_tasks = _parse_reminder_tasks(context_value.get("reminder_tasks", []))
+    # Policy: a missing reference time or zone must be asked about, never guessed by the model.
+    if reference_time is None:
+        raise RequestValidationError("MISSING_REFERENCE_TIME", "Reference time is required.")
+    if timezone_name is None:
+        raise RequestValidationError("MISSING_TIMEZONE", "Time zone is required.")
 
     return ReminderRequest(
         text=text,

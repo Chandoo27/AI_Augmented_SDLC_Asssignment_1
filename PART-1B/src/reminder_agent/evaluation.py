@@ -41,6 +41,7 @@ TIME_QUESTION_TERMS = {
     "day",
     "duration",
     "hour",
+    "long",
     "time",
     "timezone",
     "when",
@@ -53,11 +54,26 @@ TARGET_QUESTION_TERMS = {
     "which task",
     "target reminder",
 }
+# Amendment A4: a question that asks "which <item> ... reschedule/snooze" names the target too.
+TARGET_CHOICE_WORDS = {
+    "appointment",
+    "bill",
+    "one",
+    "reminder",
+    "reminders",
+    "reschedule",
+    "snooze",
+}
 TASK_QUESTION_TERMS = {
     "what should i remind",
     "what do you want me to remind",
     "what task should i",
     "which task should i remind",
+    "what task",
+    "which task would you like",
+    "what would you like",
+    "remind you about",
+    "reminded about",
 }
 DEFAULT_THRESHOLDS = {
     "schema_validity": 1.0,
@@ -1099,7 +1115,12 @@ def _matches_clarification_topic(question: str, topic: str) -> bool:
     if topic == "time":
         return bool(TIME_QUESTION_TERMS & set(re.findall(r"[a-z]+", question)))
     if topic == "target":
-        return any(term in question for term in TARGET_QUESTION_TERMS)
+        words = set(re.findall(r"[a-z]+", question))
+        return (
+            any(term in question for term in TARGET_QUESTION_TERMS)
+            or ("which" in words and bool(TARGET_CHOICE_WORDS & words))
+            or ("did you mean" in question and " or " in question)
+        )
     if topic == "task":
         return any(term in question for term in TASK_QUESTION_TERMS)
     return bool(question.strip())

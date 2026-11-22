@@ -4,6 +4,19 @@
 **Input**: Existing Part 1B specification from the prior `Assignment_1` checkout, designated
 by the student as the requirements baseline, with the student's decision to use Gemini.
 
+## Clarifications
+
+### Session 2026-11-22 (recorded from the decisions already approved in this specification)
+
+- Q: Which model and temperature does the agent use? → A: `gemini-3.5-flash-lite` at temperature 0.3, recorded in every report.
+- Q: What happens when the model is unavailable? → A: A safe error code is returned; there is no local parser fallback (FR-012).
+- Q: What is evaluated and how often? → A: 86 development and 20 held-out cases; 12 development cases run three times each, giving 130 runs and at most 140 provider attempts (NFR-009, NFR-010).
+- Q: What are the pass thresholds? → A: 100% schema validity, 100% property validity, at least 95% overall and 90% per-operation semantic correctness, and 100% clarification correctness (NFR-001 to NFR-003).
+- Q: Where do credentials live? → A: In `PART-1B/.env` (ignored by Git) or the process environment; the environment takes precedence (FR-014).
+- Q: Which languages are supported? → A: English only; a request in another language gets a clarification asking for English (FR-005, FR-009, "unsupported" requests).
+- Q: What happens when the reference time or the time zone is absent? → A: The request is not sent to the model; a clarification asks for it (Date, Time, and Target Policy).
+- Q: Which later changes touch protected artifacts? → A: Recorded in `amendments.md` (A1 to A4); none changes a threshold or case.
+
 ## User Stories and Acceptance Scenarios
 
 ### US-001 — Create a reminder (Priority: P1)

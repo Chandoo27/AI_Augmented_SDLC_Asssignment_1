@@ -67,6 +67,8 @@ def _clarification_for(error: RequestValidationError) -> dict[str, Any]:
     questions = {
         "INVALID_TIMEZONE": "Which supported time zone should I use?",
         "INVALID_REFERENCE_TIME": "Please provide a valid reference time.",
+        "MISSING_REFERENCE_TIME": "Please provide a reference date and time.",
+        "MISSING_TIMEZONE": "What time zone should I use?",
         "REQUEST_TOO_LONG": "Please shorten the reminder request.",
     }
     return {
