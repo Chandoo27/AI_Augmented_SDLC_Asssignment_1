@@ -12,7 +12,7 @@ from reminder_agent.prompt import SYSTEM_INSTRUCTION, build_user_content
 from reminder_agent.validation import validate_request
 
 ROOT = Path(__file__).parents[2]
-DEVELOPMENT_DATASET = ROOT / "data" / "evaluation" / "v1.jsonl"
+DEVELOPMENT_DATASET = ROOT / "evals" / "v1.jsonl"
 
 
 class FakeGenerator:

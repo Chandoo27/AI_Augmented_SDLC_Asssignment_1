@@ -87,5 +87,5 @@ raw request text, response content, or API credentials.
 
 See [spec.md](./spec.md) for the response contract, date/time and target rules, approved
 configuration, and acceptance criteria. See [traceability.md](./traceability.md) and
-[`data/evaluation/traceability.json`](../../data/evaluation/traceability.json) for the
+[`evals/traceability.json`](../../evals/traceability.json) for the
 requirement-to-case/test/source mapping.

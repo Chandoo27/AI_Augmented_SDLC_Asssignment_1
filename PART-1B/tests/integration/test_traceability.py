@@ -3,7 +3,7 @@ from pathlib import Path
 from reminder_agent.evaluation import validate_traceability
 
 ROOT = Path(__file__).parents[2]
-MANIFEST_PATH = ROOT / "data" / "evaluation" / "traceability.json"
+MANIFEST_PATH = ROOT / "evals" / "traceability.json"
 SPECIFICATION_PATH = ROOT / "specs" / "001-reminder-agent" / "spec.md"
 
 

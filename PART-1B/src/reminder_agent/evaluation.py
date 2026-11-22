@@ -66,9 +66,7 @@ DEFAULT_THRESHOLDS = {
     "per_operation_semantic_accuracy": 0.9,
     "clarification_accuracy": 1.0,
 }
-DEFAULT_TRACEABILITY_PATH = (
-    Path(__file__).resolve().parents[2] / "data" / "evaluation" / "traceability.json"
-)
+DEFAULT_TRACEABILITY_PATH = Path(__file__).resolve().parents[2] / "evals" / "traceability.json"
 DEFAULT_SPECIFICATION_PATH = (
     Path(__file__).resolve().parents[2] / "specs" / "001-reminder-agent" / "spec.md"
 )
@@ -347,6 +345,30 @@ def _call_budget_exhaustion(
     )
 
 
+def _record_failure(
+    sink: list[dict[str, Any]] | None,
+    case: EvaluationCase,
+    run_index: int,
+    failure_codes: tuple[str, ...],
+    actual: dict[str, Any] | None,
+) -> None:
+    # Amendment A1: synthetic cases only. The request text is not copied; it is found by case_id.
+    if sink is None or not failure_codes:
+        return
+    sink.append(
+        {
+            "case_id": case.case_id,
+            "run_index": run_index,
+            "operation": case.operation,
+            "category": case.category,
+            "failure_codes": list(failure_codes),
+            "expected": asdict(case.expected),
+            "clarification_topic": case.clarification_topic,
+            "actual": actual,
+        }
+    )
+
+
 def run_evaluation(
     cases: Sequence[EvaluationCase],
     agent: ReminderAgent,
@@ -363,6 +385,7 @@ def run_evaluation(
     specification_path: Path = DEFAULT_SPECIFICATION_PATH,
     created_at: datetime | None = None,
     command: str = "combined",
+    failure_evidence: list[dict[str, Any]] | None = None,
 ) -> EvaluationReport:
     if not cases:
         raise EvaluationInputError("EMPTY_EVALUATION", "Evaluation requires at least one case.")
@@ -424,6 +447,7 @@ def run_evaluation(
                     run_index=run_index,
                 ) from error
             results.append(_failed_result(case, run_index, error.code))
+            _record_failure(failure_evidence, case, run_index, (error.code,), None)
             continue
         except PipelineError as error:
             provider_attempts += error.attempts
@@ -437,6 +461,9 @@ def run_evaluation(
                     run_index=run_index,
                 ) from error
             results.append(_failed_result(case, run_index, error.code))
+            _record_failure(
+                failure_evidence, case, run_index, (error.code,), error.rejected_response
+            )
             continue
 
         generation = processed.generation
@@ -470,6 +497,7 @@ def run_evaluation(
             failure_codes.append("INVALID_ACTION_PROPERTIES")
         if not semantic_is_correct:
             failure_codes.append("SEMANTIC_MISMATCH")
+        _record_failure(failure_evidence, case, run_index, tuple(failure_codes), processed.response)
         results.append(
             EvaluationResult(
                 case_id=case.case_id,

@@ -18,8 +18,8 @@ from reminder_agent.models import EvaluationCase, ReminderRequest, ReminderRespo
 from reminder_agent.validation import RequestValidationError, validate_request
 
 ROOT = Path(__file__).parents[2]
-DEVELOPMENT_DATASET = ROOT / "data" / "evaluation" / "v1.jsonl"
-HELDOUT_DATASET = ROOT / "data" / "evaluation" / "heldout-v1.jsonl"
+DEVELOPMENT_DATASET = ROOT / "evals" / "v1.jsonl"
+HELDOUT_DATASET = ROOT / "evals" / "heldout-v1.jsonl"
 
 
 class DatasetGenerator:
@@ -153,3 +153,39 @@ def _response_dict(response: ReminderResponse) -> dict[str, Any]:
         "needs_clarification": response.needs_clarification,
         "clarification_question": response.clarification_question,
     }
+
+
+def test_TEST_EVALUATION_COLLECTS_EXPECTED_VERSUS_ACTUAL_FOR_FAILED_RUNS_ONLY() -> None:
+    cases = load_cases(DEVELOPMENT_DATASET)[:2]
+    wrong_for_second_case = _response_dict(cases[0].expected)
+    evidence: list[dict[str, Any]] = []
+
+    class FixedGenerator:
+        def generate(self, request: Any) -> ModelGeneration:
+            return ModelGeneration(
+                response=wrong_for_second_case,
+                model_version="fake-model",
+                response_id="fake-response",
+                prompt_tokens=1,
+                candidate_tokens=1,
+                attempts=1,
+            )
+
+    run_evaluation(
+        cases,
+        ReminderAgent(FixedGenerator()),
+        model="gemini-3.5-flash-lite",
+        temperature=0.3,
+        prompt_version="test-prompt",
+        max_calls=140,
+        max_runs=2,
+        command="development",
+        failure_evidence=evidence,
+    )
+
+    assert [item["case_id"] for item in evidence] == [cases[1].case_id]
+    item = evidence[0]
+    assert item["failure_codes"] == ["SEMANTIC_MISMATCH"]
+    assert item["actual"] == wrong_for_second_case
+    assert item["expected"]["task"] == cases[1].expected.task
+    assert cases[1].request_payload["text"] not in json.dumps(item)

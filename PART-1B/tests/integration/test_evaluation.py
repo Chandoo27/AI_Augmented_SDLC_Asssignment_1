@@ -21,8 +21,8 @@ from reminder_agent.models import EvaluationCase, EvaluationReport, EvaluationRe
 from reminder_agent.validation import RequestValidationError, validate_request
 
 ROOT = Path(__file__).parents[2]
-DEVELOPMENT_DATASET = ROOT / "data" / "evaluation" / "v1.jsonl"
-HELDOUT_DATASET = ROOT / "data" / "evaluation" / "heldout-v1.jsonl"
+DEVELOPMENT_DATASET = ROOT / "evals" / "v1.jsonl"
+HELDOUT_DATASET = ROOT / "evals" / "heldout-v1.jsonl"
 
 
 def test_TEST_EVALUATION_LOADS_VERSIONED_86_CASE_DEVELOPMENT_DATASET() -> None:

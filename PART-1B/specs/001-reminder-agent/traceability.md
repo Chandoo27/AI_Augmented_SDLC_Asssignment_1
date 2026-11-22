@@ -1,6 +1,6 @@
 # Traceability: Gemini Reminder Agent
 
-The executable mapping is [`data/evaluation/traceability.json`](../../data/evaluation/traceability.json). Dataset cases carry stable IDs and requirement IDs; the traceability test verifies every requirement against concrete case IDs, existing pytest test IDs, and current Python symbols or documentation/config anchors.
+The executable mapping is [`evals/traceability.json`](../../evals/traceability.json). Dataset cases carry stable IDs and requirement IDs; the traceability test verifies every requirement against concrete case IDs, existing pytest test IDs, and current Python symbols or documentation/config anchors.
 
 The table below summarizes dataset coverage. Exact case IDs are discoverable from each JSONL row's `requirement_ids`; explicit repeats and harness-only cases are listed in the manifest.
 

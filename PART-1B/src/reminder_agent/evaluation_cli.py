@@ -20,8 +20,8 @@ from reminder_agent.models import EvaluationCase
 from reminder_agent.prompt import PROMPT_VERSION
 
 ROOT = Path(__file__).resolve().parents[2]
-DEVELOPMENT_DATASET = ROOT / "data" / "evaluation" / "v1.jsonl"
-HELDOUT_DATASET = ROOT / "data" / "evaluation" / "heldout-v1.jsonl"
+DEVELOPMENT_DATASET = ROOT / "evals" / "v1.jsonl"
+HELDOUT_DATASET = ROOT / "evals" / "heldout-v1.jsonl"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -38,7 +38,14 @@ def main(argv: list[str] | None = None) -> int:
         default=Path("evidence/evaluation-report.json"),
         help="Path for the privacy-safe JSON report.",
     )
+    parser.add_argument(
+        "--failure-evidence",
+        type=Path,
+        default=None,
+        help="Optional path for expected-versus-actual evidence of failed synthetic runs.",
+    )
     args = parser.parse_args(argv)
+    evidence: list[dict[str, Any]] = []
 
     settings: Settings | None = None
     cases: tuple[EvaluationCase, ...] = ()
@@ -63,6 +70,7 @@ def main(argv: list[str] | None = None) -> int:
             repeated_case_ids=repeat_ids,
             command=args.mode,
             thresholds=DEFAULT_THRESHOLDS,
+            failure_evidence=evidence if args.failure_evidence else None,
         )
         write_report(report, args.report)
     except ConfigurationError as error:
@@ -95,6 +103,12 @@ def main(argv: list[str] | None = None) -> int:
     except OSError:
         _write_error("REPORT_WRITE_ERROR")
         return 2
+    finally:
+        if args.failure_evidence and evidence:
+            args.failure_evidence.parent.mkdir(parents=True, exist_ok=True)
+            args.failure_evidence.write_text(
+                json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
 
     summary: dict[str, Any] = {
         "passed": report.passed,

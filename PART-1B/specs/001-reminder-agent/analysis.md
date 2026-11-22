@@ -20,6 +20,6 @@ are listed below and committed separately.
 ## Coverage
 
 All FR-001 to FR-014 and NFR-001 to NFR-010 map to evaluation cases and tests in
-`data/evaluation/traceability.json`, which a test checks. There are no conflicts between the spec
+`evals/traceability.json` (formerly `data/evaluation/traceability.json`), which a test checks. There are no conflicts between the spec
 and the plan. The thresholds were fixed before the first live run (commit `0c05ed4`) and are not
 changed by any repair.

@@ -76,7 +76,7 @@ PART-1B/
     contract/
     property/
     integration/
-  data/evaluation/
+  evals/
     v1.jsonl
     heldout-v1.jsonl
     traceability.json

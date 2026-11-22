@@ -2,12 +2,12 @@
   "schema_version": "1.0.0",
   "dataset_links": {
     "development": {
-      "path": "data/evaluation/v1.jsonl",
+      "path": "evals/v1.jsonl",
       "case_id_field": "case_id",
       "requirement_ids_field": "requirement_ids"
     },
     "held_out": {
-      "path": "data/evaluation/heldout-v1.jsonl",
+      "path": "evals/heldout-v1.jsonl",
       "case_id_field": "case_id",
       "requirement_ids_field": "requirement_ids"
     }
