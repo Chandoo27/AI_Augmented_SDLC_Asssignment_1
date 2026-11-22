@@ -48,7 +48,7 @@ Examples: "What task would you like me to remind you about?" (task), "How long w
 snooze it?" (time), "Which appointment would you like to reschedule?" and "Did you mean A or B?"
 (target).
 
-**Change.** The word lists for the `task`, `time` and `target` topics accept those phrasings.
+**Change.** The word lists for the `task`, `time` and `target` topics accept those phrasings, and a time question that names a month ("March 4th or April 3rd?") counts as a time question.
 A question about the wrong topic, and a statement that is not a question about the topic, are
 still rejected; tests cover both directions. No case, expected response, threshold or
 guardrail is changed, and the intent must still match exactly.

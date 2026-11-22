@@ -1,0 +1,1 @@
+{"evaluation_runs":130,"failed_thresholds":["clarification_accuracy","overall_semantic_accuracy","per_operation_semantic_accuracy","property_validity","schema_validity"],"passed":false,"provider_attempts":139,"report":"evidence/eval-runs/run-1/evaluation-report.json"}

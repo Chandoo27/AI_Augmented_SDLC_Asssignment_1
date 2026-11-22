@@ -1,0 +1,584 @@
+[
+  {
+    "actual": null,
+    "case_id": "EV-CREATE-010",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-12-01T09:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "send invoice"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-20T18:00:00-05:00",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "call parents"
+    },
+    "case_id": "EV-CREATE-017",
+    "category": "explicit-timezone",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T18:00:00-05:00",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "call parents"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-20T18:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-CREATE-019",
+    "category": "missing-task",
+    "clarification_topic": "task",
+    "expected": {
+      "clarification_question": "What should I remind you about?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What time tomorrow should I remind you?",
+      "datetime": "",
+      "intent": "create",
+      "needs_clarification": true,
+      "task": "pay the utility bill"
+    },
+    "case_id": "EV-CREATE-020",
+    "category": "missing-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay the utility bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "Should 03/04 be read as March 4th or April 3rd?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CREATE-021",
+    "category": "ambiguous-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "Which date format did you mean?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay the bill"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What reminder task would you like?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-005",
+    "category": "missing-information",
+    "clarification_topic": "task",
+    "expected": {
+      "clarification_question": "What should I remind you about?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What reminder task would you like?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-005",
+    "category": "missing-information",
+    "clarification_topic": "task",
+    "expected": {
+      "clarification_question": "What should I remind you about?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "clarification",
+    "run_index": 2
+  },
+  {
+    "actual": {
+      "clarification_question": "What task would you like to be reminded about?",
+      "datetime": "",
+      "intent": "create",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-005",
+    "category": "missing-information",
+    "clarification_topic": "task",
+    "expected": {
+      "clarification_question": "What should I remind you about?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "clarification",
+    "run_index": 3
+  },
+  {
+    "actual": {
+      "clarification_question": "What time tomorrow would you like to be reminded?",
+      "datetime": "",
+      "intent": "create",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-CLARIFY-006",
+    "category": "missing-information",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "Do you mean March 4th or April 3rd?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-007",
+    "category": "ambiguous-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "Which date format did you mean?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "The requested time is in the past. What time would you like to be reminded?",
+      "datetime": "2026-11-19T08:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": true,
+      "task": "pay the bill"
+    },
+    "case_id": "EV-CLARIFY-016",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "That date and time is not in the future. What future time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay the bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What reminder would you like to set?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-018",
+    "category": "malformed",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "A reschedule needs an explicit new date and time rather than a duration. What new date and time would you like for pay electricity bill?",
+      "datetime": "",
+      "intent": "reschedule",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-RESCHEDULE-003",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T11:00:00+05:30",
+      "intent": "reschedule",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-RESCHEDULE-003",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T11:00:00+05:30",
+      "intent": "reschedule",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "reschedule",
+    "run_index": 2
+  },
+  {
+    "actual": {
+      "clarification_question": "What is the new date and time for pay electricity bill?",
+      "datetime": "",
+      "intent": "reschedule",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-RESCHEDULE-003",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T11:00:00+05:30",
+      "intent": "reschedule",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "reschedule",
+    "run_index": 3
+  },
+  {
+    "actual": {
+      "clarification_question": "Which reminder would you like to reschedule?",
+      "datetime": "",
+      "intent": "reschedule",
+      "needs_clarification": true,
+      "task": "an appointment"
+    },
+    "case_id": "EV-RESCHEDULE-009",
+    "category": "missing-target",
+    "clarification_topic": "target",
+    "expected": {
+      "clarification_question": "Which existing reminder should I update?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "Which reminder would you like to reschedule?",
+      "datetime": "",
+      "intent": "reschedule",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-RESCHEDULE-011",
+    "category": "ambiguous-target",
+    "clarification_topic": "target",
+    "expected": {
+      "clarification_question": "Which existing reminder should I update?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "Which reminder would you like to reschedule?",
+      "datetime": "",
+      "intent": "reschedule",
+      "needs_clarification": true,
+      "task": "travel plans"
+    },
+    "case_id": "EV-RESCHEDULE-019",
+    "category": "missing-target",
+    "clarification_topic": "target",
+    "expected": {
+      "clarification_question": "Which existing reminder should I update?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-SNOOZE-004",
+    "category": "duration",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T11:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "attend project review"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T10:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-SNOOZE-014",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-18T18:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "review the plan"
+    },
+    "case_id": "EV-CLARIFY-022",
+    "category": "past-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "That date and time is not in the future. What future time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "review the plan"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What time tomorrow should I remind you?",
+      "datetime": "",
+      "intent": "create",
+      "needs_clarification": true,
+      "task": "pay the utility bill"
+    },
+    "case_id": "EV-HELDOUT-CREATE-004",
+    "category": "missing-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay the utility bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "Which reminder do you want to reschedule?",
+      "datetime": "",
+      "intent": "reschedule",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-HELDOUT-RESCHEDULE-004",
+    "category": "ambiguous-target",
+    "clarification_topic": "target",
+    "expected": {
+      "clarification_question": "Which existing reminder should I update?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "How long would you like to snooze the reminder?",
+      "datetime": "",
+      "intent": "snooze",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-HELDOUT-SNOOZE-005",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What time would you like to set for the past date November 18?",
+      "datetime": "",
+      "intent": "create",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-HELDOUT-CLARIFICATION-005",
+    "category": "past-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "That date and time is not in the future. What future time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "review the plan"
+    },
+    "failure_codes": [
+      "INVALID_MODEL_ACTION"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  }
+]
