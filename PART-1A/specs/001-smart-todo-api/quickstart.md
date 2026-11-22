@@ -133,5 +133,4 @@ server worker per data file.
 
 From the repository root, create a clean checkout and install the Part 1A package using the
 commands in this quickstart. Then run `python scripts/run_harness.py` from `PART-1A`. The
-generated report is evidence; the student-authored `harness-log.md` is separate and remains
-outside version control.
+generated report is evidence; the student-authored log is `evidence/harness-log.md`.

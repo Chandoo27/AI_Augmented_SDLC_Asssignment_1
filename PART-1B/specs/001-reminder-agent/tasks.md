@@ -81,13 +81,13 @@ the behavior covered.
 - [x] T022 Write quickstart and release documentation for local credentials, model config,
   privacy, tests, live evaluation, budgets, thresholds, and report contents
   (`FR-014`, `NFR-004..NFR-008`, `AC-010..AC-011`).
-- [ ] T023 Run unit/contract/property tests, offline harness tests, configured quality and
+- [x] T023 Run unit/contract/property tests, offline harness tests, configured quality and
   security checks, then the approved live development and held-out evaluation; record actual
   results in release evidence and update the human-readable harness log
   (`NFR-001..NFR-010`, `AC-001..AC-012`).
-  Four 2026-11-21 combined live attempts exhausted the 140-provider-attempt ceiling. The
-  instrumented fourth attempt recorded 111/130 runs and safe retry/error-code summaries, but
-  thresholds were not evaluated; a one-attempt diagnostic succeeded separately.
+  Six complete live evaluations were run on 2026-11-22 and 2026-11-23 (`evidence/eval-runs/run-1`
+  to `run-6`; run 3 stopped at the old 140-attempt ceiling). Run 6 (prompt v5) met every
+  threshold and is copied to `evidence/eval-results.json`. The student writes the harness log.
 
 ## Dependency Order
 

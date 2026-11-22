@@ -1,34 +1,43 @@
-# AI-Augmented SDLC Assignment 1
+# AI-Augmented SDLC: Assignment 1 (Spec-Driven Development and Harness Engineering)
 
-This repository is being built in specification-first milestones for Assignment 1.
+Two small applications built with the GitHub Spec Kit workflow and checked by a harness that is
+independent of the generated code.
 
-## Parts
+| Folder | Application | Kind |
+|---|---|---|
+| `PART-1A/` | Smart Todo API (FastAPI, local JSON storage) | Deterministic |
+| `PART-1B/` | Gemini Reminder Agent (natural-language reminders, model `gemini-3.5-flash-lite`) | Non-deterministic |
 
-- **Part 1A** — deterministic Smart Todo API; implementation and all release gates verified.
-- **Part 1B** — non-deterministic Natural Language Reminder Agent using the approved
-  `gemini-3.5-flash-lite` model; configuration, local validation, provider integration,
-  story flows, CLI, offline evaluation orchestration, and quickstart documentation are
-  implemented. Offline release checks pass; live release evaluation remains incomplete after
-  a combined run exhausted the configured 140-provider-attempt ceiling.
+## Use of AI assistance
 
-Each part will keep its requirements, design, tests, implementation, and validation evidence
-together. The Part 1A harness log records its passing release gates. The Part 1B harness log
-records offline verification and explicitly notes that live evaluation remains pending.
+This assignment was developed with help from AI. Claude (through Claude Code) was used as a
+coding agent to draft the Spec Kit artifacts and to write implementation, test and harness code,
+under the student's direction and review. The harness logs and the reflection answers are
+written by the student from the real evidence, as the assignment requires.
 
-## Current state
+## Part 1A
 
-Part 1A is complete and verified on branch `001-smart-todo-api` through `1f80a52`; its
-implementation, release evidence, and clean-checkout verification have been pushed to the
-feature branch. The baseline is tagged `part-1a-pre-implementation`. Part 1B's specification,
-plan, tasks, and traceability are approved using the existing Part 1B specification from the
-prior `Assignment_1` checkout as its requirements baseline. Part 1B now has versioned
-development/held-out datasets, executable requirement traceability, safe response
-serialization, and deterministic offline scoring tests. No live Gemini evaluation has been
-run.
+- Spec, plan, tasks, analysis and traceability: `PART-1A/specs/001-smart-todo-api/`
+- Harness: `PART-1A/scripts/run_harness.py` runs six gates (pytest with 80% coverage, Ruff
+  check, Ruff format, Bandit, pip-audit, secret scan). Results are kept in
+  `PART-1A/evidence/harness-runs/`.
+- Evidence: `PART-1A/evidence/initial-generation/` (last committed source before the first
+  harness run), `final-generation/`, and the log `PART-1A/evidence/harness-log.md`.
+- Run (from `PART-1A`): `python -m pip install -e ".[dev]"` then `python scripts/run_harness.py`.
 
-Four Part 1B combined live Gemini evaluation attempts stopped at the 140-provider-attempt
-ceiling. The classified final attempt wrote a partial report for 111 of 130 runs, including
-rate-limit retry failures, but did not evaluate release thresholds. A separate one-attempt
-diagnostic succeeded but does not satisfy the evaluation criteria. Its release gate remains
-pending until provider rate-limit failures are resolved and a complete approved evaluation
-report is reviewed.
+## Part 1B
+
+- Spec (response contract, invariants, guardrails, thresholds), plan, tasks, analysis,
+  amendments: `PART-1B/specs/001-reminder-agent/`
+- Datasets: `PART-1B/evals/` (86 development and 20 held-out cases, plus the traceability
+  manifest). Evaluators and the runner: `PART-1B/src/reminder_agent/evaluation.py` and
+  `evaluation_cli.py` (schema, property and semantic layers; no model as judge).
+- Evidence: `PART-1B/evidence/eval-runs/run-1` to `run-6`, `eval-results.json` (the passing
+  report, a copy of run 6), `fresh-check/`, `initial-generation/`, `final-generation/`, and the
+  log `PART-1B/evidence/harness-log.md`.
+- Offline tests need no key. The live evaluation needs `GEMINI_API_KEY` in `PART-1B/.env`
+  (copy `.env.example`; the file is ignored by Git and must never be committed).
+- Run (from `PART-1B`): `python -m pip install -e ".[dev]"`, `python -m pytest`, then
+  `reminder-agent-evaluate --mode combined --report evidence/eval-runs/run-N/evaluation-report.json`.
+  One evaluation makes up to 200 provider attempts, so a free-tier key (500 requests a day)
+  allows about three runs a day.

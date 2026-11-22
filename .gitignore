@@ -14,6 +14,3 @@ htmlcov/
 !.env.example
 .envrc
 
-# Student-authored assignment evidence; keep these outside Git.
-/PART-1A/harness-log.md
-/PART-1B/harness-log.md

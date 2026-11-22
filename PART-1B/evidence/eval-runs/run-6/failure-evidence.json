@@ -1,0 +1,26 @@
+[
+  {
+    "actual": {
+      "clarification_question": "Which reminder would you like to snooze?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-SNOOZE-005",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T17:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  }
+]

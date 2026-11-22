@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "20261122T180706241397Z",
+  "created_utc": "2026-11-22T18:07:06.241865+00:00",
+  "passed": false,
+  "gates": [
+    {
+      "name": "pytest",
+      "command": [
+        "/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/bin/python",
+        "-m",
+        "pytest"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.12.15, pytest-9.2.0, pluggy-1.7.0\nrootdir: /Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A\nconfigfile: pyproject.toml\ntestpaths: tests\nplugins: platformdirs-4.14.8, cov-7.1.0, anyio-4.16.0\ncollected 42 items\n\ntests/test_filters.py ........                                           [ 19%]\ntests/test_harness_runner.py ..                                          [ 23%]\ntests/test_storage.py ......                                             [ 38%]\ntests/test_tasks.py ..........................                           [100%]\n\n================================ tests coverage ================================\n______________ coverage: platform darwin, python 3.12.15-final-0 _______________\n\nName              Stmts   Miss  Cover   Missing\n-----------------------------------------------\nsrc/__init__.py       0      0   100%\nsrc/main.py          48      4    92%   77-78, 86-90\nsrc/models.py       134     18    87%   47, 78-80, 85-94, 123, 129, 154, 160\nsrc/routes.py        32      0   100%\nsrc/services.py      59      1    98%   34\nsrc/storage.py       70      3    96%   64, 68-69\n-----------------------------------------------\nTOTAL               343     26    92%\nRequired test coverage of 80% reached. Total coverage: 92.42%\n============================== 42 passed in 2.12s ==============================\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "ruff-check",
+      "command": [
+        "/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "scripts"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "ruff-format",
+      "command": [
+        "/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/bin/python",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "scripts"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "13 files already formatted\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "bandit",
+      "command": [
+        "/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/bin/python",
+        "-m",
+        "bandit",
+        "-q",
+        "-r",
+        "src"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "name": "pip-audit",
+      "command": [
+        "/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/bin/python",
+        "-m",
+        "pip_audit",
+        "--skip-editable"
+      ],
+      "status": "FAIL",
+      "return_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 540, in _make_request\n    response = conn.getresponse()\n               ^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/connection.py\", line 638, in getresponse\n    httplib_response = super().getresponse()\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/http/client.py\", line 1478, in getresponse\n    response.begin()\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/http/client.py\", line 343, in begin\n    version, status, reason = self._read_status()\n                              ^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/http/client.py\", line 304, in _read_status\n    line = str(self.fp.readline(_MAXLINE + 1), \"iso-8859-1\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/socket.py\", line 720, in readinto\n    return self._sock.recv_into(b)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/ssl.py\", line 1264, in recv_into\n    return self.read(nbytes, buffer)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.12/3.12.15/Frameworks/Python.framework/Versions/3.12/lib/python3.12/ssl.py\", line 1116, in read\n    return self._sslobj.read(len, buffer)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: The read operation timed out\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 696, in send\n    resp = conn.urlopen(\n           ^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 847, in urlopen\n    retries = retries.increment(\n              ^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/util/retry.py\", line 510, in increment\n    raise reraise(type(error), error, _stacktrace)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/util/util.py\", line 39, in reraise\n    raise value\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 793, in urlopen\n    response = self._make_request(\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 542, in _make_request\n    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py\", line 373, in _raise_timeout\n    raise ReadTimeoutError(\nurllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/pip_audit/__main__.py\", line 8, in <module>\n    audit()\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/pip_audit/_cli.py\", line 554, in audit\n    for spec, vulns in auditor.audit(source):\n                       ^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/pip_audit/_audit.py\", line 68, in audit\n    for dep, vulns in self._service.query_all(specs):\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/pip_audit/_service/interface.py\", line 180, in query_all\n    yield self.query(spec)\n          ^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/pip_audit/_service/pypi.py\", line 64, in query\n    response: requests.Response = self.session.get(url=url, timeout=self.timeout)\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 671, in get\n    return self.request(\"GET\", url, params=params, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 651, in request\n    resp = self.send(prep, **send_kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/requests/sessions.py\", line 784, in send\n    r = adapter.send(request, **kwargs)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/cachecontrol/adapter.py\", line 76, in send\n    resp = super().send(request, stream, timeout, verify, cert, proxies)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/lib/python3.12/site-packages/requests/adapters.py\", line 742, in send\n    raise ReadTimeout(e, request=request)\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='pypi.org', port=443): Read timed out. (read timeout=15)\n",
+      "error": null
+    },
+    {
+      "name": "secret-scan",
+      "command": [
+        "/Users/lynnfernandes/Documents/Masters of Technology in Software Engineering/Code/Development/AI SDLC Chandoo/PART-1A/.venv/bin/python",
+        "scripts/check_secrets.py"
+      ],
+      "status": "PASS",
+      "return_code": 0,
+      "stdout": "No secrets detected.\n",
+      "stderr": "",
+      "error": null
+    }
+  ]
+}
