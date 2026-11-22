@@ -15,7 +15,7 @@ by the student as the requirements baseline, with the student's decision to use 
 - Q: Where do credentials live? → A: In `PART-1B/.env` (ignored by Git) or the process environment; the environment takes precedence (FR-014).
 - Q: Which languages are supported? → A: English only; a request in another language gets a clarification asking for English (FR-005, FR-009, "unsupported" requests).
 - Q: What happens when the reference time or the time zone is absent? → A: The request is not sent to the model; a clarification asks for it (Date, Time, and Target Policy).
-- Q: Which later changes touch protected artifacts? → A: Recorded in `amendments.md` (A1 to A7); none changes a threshold or case.
+- Q: Which later changes touch protected artifacts? → A: Recorded in `amendments.md` (A1 to A8); none changes a threshold or case.
 
 ## User Stories and Acceptance Scenarios
 

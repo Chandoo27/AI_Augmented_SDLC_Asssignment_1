@@ -1,0 +1,98 @@
+[
+  {
+    "actual": null,
+    "case_id": "EV-CREATE-008",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T11:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "review notes"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-20T18:00:00-05:00",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "call parents"
+    },
+    "case_id": "EV-CREATE-017",
+    "category": "explicit-timezone",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T18:00:00-05:00",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "call parents"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-CREATE-022",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "I couldn't resolve that date and time. What should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "audit inventory"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-SNOOZE-016",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-HELDOUT-CREATE-001",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-20T18:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "create",
+    "run_index": 1
+  }
+]

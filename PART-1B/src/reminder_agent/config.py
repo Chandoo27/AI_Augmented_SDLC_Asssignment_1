@@ -9,7 +9,7 @@ from dotenv import dotenv_values
 DEFAULT_MODEL = "gemini-3.5-flash-lite"
 DEFAULT_TEMPERATURE = 0.3
 DEFAULT_TIMEOUT_SECONDS = 30.0
-DEFAULT_MAX_ATTEMPTS = 2
+DEFAULT_MAX_ATTEMPTS = 3
 DEFAULT_MAX_CALLS = 200
 DEFAULT_MIN_INTERVAL_SECONDS = 5.0
 DEFAULT_DOTENV_PATH = Path(__file__).resolve().parents[2] / ".env"

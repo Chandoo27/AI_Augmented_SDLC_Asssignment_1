@@ -97,3 +97,17 @@ category is `duration` instead of `invalid-time`. No other case was edited.
 
 **Impact.** One fewer clarification-required case (62 instead of 63 runs in the combined
 evaluation) and one more snooze case. The student approved this correction on 2026-11-23.
+
+## A8 — Retry policy for provider server errors (2026-11-23)
+
+**Reason.** Runs 4 and 5 completed, but 3 and 4 runs failed because Gemini returned server errors
+twice in a row, and a provider outage is counted as an invalid reply by the 100% schema and
+property thresholds. Reporting provider failures separately is a harness-metric change that this
+amendment does not make.
+
+**Change.** The default number of attempts per request is 3 (the configured range is still 1 to
+3) and a retry after a server error or timeout waits 10 seconds. The 200-attempt ceiling and all
+thresholds are unchanged.
+
+**Impact.** A request that fails twice can still succeed on a third try; a run takes a little
+longer when the provider is unstable.
