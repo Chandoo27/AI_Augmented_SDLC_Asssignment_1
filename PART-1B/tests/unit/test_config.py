@@ -104,3 +104,19 @@ def test_TEST_CONFIG_USES_APPROVED_MODEL_AND_TEMPERATURE_DEFAULTS() -> None:
     assert settings.model == "gemini-3.5-flash-lite"
     assert settings.temperature == 0.3
     assert settings.max_calls == 140
+
+
+def test_TEST_CONFIG_MIN_INTERVAL_DEFAULTS_TO_FIVE_SECONDS_AND_IS_VALIDATED() -> None:
+    assert load_settings(env={"GEMINI_API_KEY": "k"}, dotenv_path=None).min_interval_seconds == 5.0
+    assert (
+        load_settings(
+            env={"GEMINI_API_KEY": "k", "GEMINI_MIN_INTERVAL_SECONDS": "0"}, dotenv_path=None
+        ).min_interval_seconds
+        == 0.0
+    )
+    for bad in ("-1", "61", "abc", "nan"):
+        with pytest.raises(ConfigurationError) as error:
+            load_settings(
+                env={"GEMINI_API_KEY": "k", "GEMINI_MIN_INTERVAL_SECONDS": bad}, dotenv_path=None
+            )
+        assert error.value.code == "INVALID_MIN_INTERVAL"

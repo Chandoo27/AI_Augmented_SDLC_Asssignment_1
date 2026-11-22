@@ -8,7 +8,7 @@ from google import genai
 from google.genai import errors
 
 from reminder_agent.config import Settings
-from reminder_agent.gemini_client import GeminiAdapter, ProviderError
+from reminder_agent.gemini_client import RATE_LIMIT_WAIT_SECONDS, GeminiAdapter, ProviderError
 from reminder_agent.validation import validate_request
 
 VALID_RESPONSE = {
@@ -130,7 +130,36 @@ def test_TEST_GEMINI_RETRIES_TRANSIENT_PROVIDER_FAILURES_ONLY() -> None:
 
     assert result.response == VALID_RESPONSE
     assert len(client.models.calls) == 2
+    assert sleeps == [RATE_LIMIT_WAIT_SECONDS]
+
+
+def test_TEST_GEMINI_SERVER_ERROR_RETRY_STAYS_SHORT() -> None:
+    client = FakeClient([errors.APIError(503, {}), _model_response()])
+    sleeps: list[float] = []
+    adapter = GeminiAdapter(_settings(), client=client, sleep=sleeps.append)
+
+    adapter.generate(_request())
+
     assert sleeps == [1]
+
+
+def test_TEST_GEMINI_PACES_CALLS_TO_THE_CONFIGURED_MINIMUM_INTERVAL() -> None:
+    client = FakeClient([_model_response(), _model_response(), _model_response()])
+    sleeps: list[float] = []
+    clock = iter([100.0, 101.0, 101.0, 110.0])
+    adapter = GeminiAdapter(
+        _settings(min_interval_seconds=5.0),
+        client=client,
+        sleep=sleeps.append,
+        monotonic=lambda: next(clock),
+    )
+
+    for _ in range(3):
+        adapter.generate(_request())
+
+    # First call is immediate, second waits for the 4 s remaining, third is already late enough.
+    assert sleeps == [4.0]
+    assert len(client.models.calls) == 3
 
 
 @pytest.mark.parametrize(

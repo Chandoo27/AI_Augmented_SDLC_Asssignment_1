@@ -11,6 +11,7 @@ DEFAULT_TEMPERATURE = 0.3
 DEFAULT_TIMEOUT_SECONDS = 30.0
 DEFAULT_MAX_ATTEMPTS = 2
 DEFAULT_MAX_CALLS = 140
+DEFAULT_MIN_INTERVAL_SECONDS = 5.0
 DEFAULT_DOTENV_PATH = Path(__file__).resolve().parents[2] / ".env"
 
 
@@ -28,6 +29,7 @@ class Settings:
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS
     max_attempts: int = DEFAULT_MAX_ATTEMPTS
     max_calls: int = DEFAULT_MAX_CALLS
+    min_interval_seconds: float = 0.0
 
 
 def load_settings(
@@ -100,6 +102,19 @@ def load_settings(
             f"Maximum calls must be an integer from 1 to {DEFAULT_MAX_CALLS}.",
         )
 
+    try:
+        min_interval_seconds = float(
+            effective.get("GEMINI_MIN_INTERVAL_SECONDS", str(DEFAULT_MIN_INTERVAL_SECONDS))
+        )
+    except ValueError as error:
+        raise ConfigurationError(
+            "INVALID_MIN_INTERVAL", "Minimum interval must be a number from 0 to 60 seconds."
+        ) from error
+    if not math.isfinite(min_interval_seconds) or not 0 <= min_interval_seconds <= 60:
+        raise ConfigurationError(
+            "INVALID_MIN_INTERVAL", "Minimum interval must be a number from 0 to 60 seconds."
+        )
+
     return Settings(
         api_key=api_key,
         model=model,
@@ -107,4 +122,5 @@ def load_settings(
         timeout_seconds=timeout_seconds,
         max_attempts=max_attempts,
         max_calls=max_calls,
+        min_interval_seconds=min_interval_seconds,
     )

@@ -13,6 +13,7 @@ from reminder_agent.models import ReminderRequest
 from reminder_agent.prompt import GENERATION_SCHEMA, SYSTEM_INSTRUCTION, build_user_content
 
 RETRYABLE_STATUS_CODES = {408, 429, 500, 502, 503, 504}
+RATE_LIMIT_WAIT_SECONDS = 20.0
 
 
 class ProviderError(RuntimeError):
@@ -52,6 +53,7 @@ class GeminiAdapter:
         settings: Settings,
         client: GenerativeClient | None = None,
         sleep: Callable[[float], None] = time.sleep,
+        monotonic: Callable[[], float] = time.monotonic,
     ) -> None:
         self._settings = settings
         self._client = (
@@ -65,6 +67,8 @@ class GeminiAdapter:
             )
         )
         self._sleep = sleep
+        self._monotonic = monotonic
+        self._last_attempt_at: float | None = None
         self._provider_attempts = 0
 
     @property
@@ -87,6 +91,7 @@ class GeminiAdapter:
                     "Gemini provider-attempt budget is exhausted.",
                     attempts=attempt - 1,
                 )
+            self._pace()
             self._provider_attempts += 1
             try:
                 response = self._client.models.generate_content(
@@ -97,7 +102,7 @@ class GeminiAdapter:
             except (errors.APIError, httpx.TransportError) as error:
                 if self._is_retryable(error):
                     if attempt < self._settings.max_attempts:
-                        self._sleep(float(min(2 ** (attempt - 1), 2)))
+                        self._sleep(self._retry_wait(error, attempt))
                         continue
                     raise ProviderError(
                         self._retry_failure_code(error),
@@ -117,6 +122,23 @@ class GeminiAdapter:
             "Gemini request failed.",
             attempts=self._settings.max_attempts,
         )
+
+    def _pace(self) -> None:
+        # Keeps calls under the free-tier requests-per-minute limit instead of
+        # relying on retries after a 429 response.
+        now = self._monotonic()
+        if self._last_attempt_at is not None:
+            wait = self._settings.min_interval_seconds - (now - self._last_attempt_at)
+            if wait > 0:
+                self._sleep(wait)
+                now = self._monotonic()
+        self._last_attempt_at = now
+
+    @staticmethod
+    def _retry_wait(error: errors.APIError | httpx.TransportError, attempt: int) -> float:
+        if isinstance(error, errors.APIError) and error.code == 429:
+            return RATE_LIMIT_WAIT_SECONDS
+        return float(min(2 ** (attempt - 1), 2))
 
     @staticmethod
     def _is_retryable(error: errors.APIError | httpx.TransportError) -> bool:
