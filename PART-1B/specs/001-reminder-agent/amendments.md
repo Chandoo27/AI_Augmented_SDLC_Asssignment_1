@@ -69,10 +69,31 @@ contradicted the policy and was replaced.
 
 **Impact.** The CLI without `--reference-time` or `--timezone` now returns a clarification.
 
-## Open decision — EV-SNOOZE-014
+## A6 — Provider-attempt ceiling raised from 140 to 200 (2026-11-23)
 
-The case "Snooze pay electricity bill for one hour." expects a clarification, while "for 1 hour"
-(EV-SNOOZE-002) and "for 15 minutes" (EV-SNOOZE-007) expect a snooze. FR-004 accepts an
-unambiguous duration. The label looks inconsistent, but the dataset is a protected artifact and
-this repair does not change it. The student must decide whether to amend the label; until then
-the case is counted as written.
+**Reason.** The ceiling leaves only 10 attempts of headroom over 130 planned runs. On the free
+tier the provider returned server errors (503) on about 4% of calls, and each failed run uses
+two attempts. Run 1 used 139 attempts, run 2 used 136, and run 3 stopped at 140 after 123 of 130
+runs (`evidence/eval-runs/run-3/`). A complete evaluation could not finish.
+
+**Change.** The default and the upper bound move to 200. The run still stops with a visible
+`CALL_BUDGET_EXHAUSTED` failure if it reaches the ceiling, and the retry limit per request is
+unchanged. No threshold changes.
+
+**Impact.** A run can take up to 60 more attempts in the worst case. The student approved this
+change on 2026-11-23.
+
+## A7 — Label correction for EV-SNOOZE-014 (2026-11-23)
+
+**Reason.** "Snooze pay electricity bill for one hour." was labelled as a clarification (topic
+time). FR-004 accepts an unambiguous duration, and the sibling cases "for 1 hour" (EV-SNOOZE-002)
+and "for 15 minutes" (EV-SNOOZE-007) are labelled as snoozes. Run 1, run 2 and run 3 all
+returned a snooze at 10:00 for this request, which agrees with FR-004. Because the clarification
+threshold is 100%, the label alone made the release threshold unreachable.
+
+**Change.** In `evals/v1.jsonl` only this case changed: its expected response is now a snooze of
+`pay electricity bill` at `2026-11-19T10:00:00+05:30`, the clarification topic is removed, and the
+category is `duration` instead of `invalid-time`. No other case was edited.
+
+**Impact.** One fewer clarification-required case (62 instead of 63 runs in the combined
+evaluation) and one more snooze case. The student approved this correction on 2026-11-23.

@@ -87,7 +87,7 @@ def test_TEST_CONFIG_REJECTS_UNBOUNDED_RETRY_COUNT(attempts: str) -> None:
     assert error.value.code == "INVALID_MAX_ATTEMPTS"
 
 
-@pytest.mark.parametrize("call_limit", ["0", "-1", "141", "invalid"])
+@pytest.mark.parametrize("call_limit", ["0", "-1", "201", "invalid"])
 def test_TEST_CONFIG_REJECTS_INVALID_CALL_BUDGET(call_limit: str) -> None:
     with pytest.raises(ConfigurationError) as error:
         load_settings(
@@ -103,7 +103,7 @@ def test_TEST_CONFIG_USES_APPROVED_MODEL_AND_TEMPERATURE_DEFAULTS() -> None:
 
     assert settings.model == "gemini-3.5-flash-lite"
     assert settings.temperature == 0.3
-    assert settings.max_calls == 140
+    assert settings.max_calls == 200
 
 
 def test_TEST_CONFIG_MIN_INTERVAL_DEFAULTS_TO_FIVE_SECONDS_AND_IS_VALIDATED() -> None:

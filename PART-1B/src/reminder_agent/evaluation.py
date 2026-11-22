@@ -419,10 +419,10 @@ def run_evaluation(
 ) -> EvaluationReport:
     if not cases:
         raise EvaluationInputError("EMPTY_EVALUATION", "Evaluation requires at least one case.")
-    if not 1 <= max_calls <= 140:
+    if not 1 <= max_calls <= 200:
         raise EvaluationInputError(
             "INVALID_CALL_BUDGET",
-            "Provider-attempt budget must be between 1 and 140.",
+            "Provider-attempt budget must be between 1 and 200.",
         )
     if (
         not model.strip()

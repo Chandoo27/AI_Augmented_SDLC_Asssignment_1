@@ -36,7 +36,7 @@ GEMINI_MODEL=gemini-3.5-flash-lite
 GEMINI_TEMPERATURE=0.3
 GEMINI_TIMEOUT_SECONDS=30
 GEMINI_MAX_ATTEMPTS=2
-GEMINI_MAX_CALLS=140
+GEMINI_MAX_CALLS=200
 ```
 
 Never commit `.env`, paste credentials into source, or put raw requests/responses in a report.
@@ -62,7 +62,7 @@ model-output failures exit non-zero with a safe error code rather than a fabrica
 
 The versioned synthetic corpus contains 86 development cases and 20 held-out cases. Combined
 evaluation makes 130 planned runs: all 106 cases once, plus 12 model-eligible development
-cases run three times total. The provider-attempt ceiling is 140 including retries; locally
+cases run three times total. The provider-attempt ceiling is 200 including retries (raised from 140 by amendment A6); locally
 rejected inputs do not consume provider attempts.
 
 ```powershell

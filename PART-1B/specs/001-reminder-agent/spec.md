@@ -10,12 +10,12 @@ by the student as the requirements baseline, with the student's decision to use 
 
 - Q: Which model and temperature does the agent use? → A: `gemini-3.5-flash-lite` at temperature 0.3, recorded in every report.
 - Q: What happens when the model is unavailable? → A: A safe error code is returned; there is no local parser fallback (FR-012).
-- Q: What is evaluated and how often? → A: 86 development and 20 held-out cases; 12 development cases run three times each, giving 130 runs and at most 140 provider attempts (NFR-009, NFR-010).
+- Q: What is evaluated and how often? → A: 86 development and 20 held-out cases; 12 development cases run three times each, giving 130 runs and at most 200 provider attempts, raised from 140 by amendment A6 (NFR-009, NFR-010).
 - Q: What are the pass thresholds? → A: 100% schema validity, 100% property validity, at least 95% overall and 90% per-operation semantic correctness, and 100% clarification correctness (NFR-001 to NFR-003).
 - Q: Where do credentials live? → A: In `PART-1B/.env` (ignored by Git) or the process environment; the environment takes precedence (FR-014).
 - Q: Which languages are supported? → A: English only; a request in another language gets a clarification asking for English (FR-005, FR-009, "unsupported" requests).
 - Q: What happens when the reference time or the time zone is absent? → A: The request is not sent to the model; a clarification asks for it (Date, Time, and Target Policy).
-- Q: Which later changes touch protected artifacts? → A: Recorded in `amendments.md` (A1 to A4); none changes a threshold or case.
+- Q: Which later changes touch protected artifacts? → A: Recorded in `amendments.md` (A1 to A7); none changes a threshold or case.
 
 ## User Stories and Acceptance Scenarios
 
@@ -224,7 +224,7 @@ task or datetime values are empty strings.
   stable model that supports structured outputs.
 - Temperature: `0.3`.
 - Evaluation: 86 development cases and 20 held-out cases; 12 selected cases have three total
-  runs each; 130 planned evaluation runs and a 140-provider-attempt maximum including
+  runs each; 130 planned evaluation runs and a 200-provider-attempt maximum (amendment A6; it was 140) including
   retries. Invalid requests rejected locally do not call Gemini.
 - Thresholds: 100% schema validity; 100% deterministic property validity; at least 95%
   overall semantic correctness; at least 90% per operation; 100% clarification correctness.

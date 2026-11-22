@@ -101,7 +101,7 @@ PART-1B/
    diversity.
 4. Use code-based scoring against gold intent, task/target, clarification state, and
    equivalent aware datetime. Do not rely on an LLM judge.
-5. Apply a maximum of 140 provider attempts and stop visibly at the limit. The plan has 130
+5. Apply a maximum of 200 provider attempts (amendment A6; it was 140) and stop visibly at the limit. The plan has 130
    evaluation runs: 106 baseline cases plus 24 additional repeats. Locally rejected inputs
    do not call Gemini, so actual provider attempts may be fewer; retries count toward the
    same cap. Capture token counts when supplied, without assuming that token counts are cost.
@@ -112,7 +112,7 @@ PART-1B/
    unmet semantic/clarification thresholds, missing repeated runs, or exhausted call budget.
 
 The student approved the legacy Part 1B corpus sizes: 86 development cases and 20 held-out
-cases. The live run therefore has 130 planned evaluation runs and a 140-provider-attempt
+cases. The live run therefore has 130 planned evaluation runs and a 200-provider-attempt (amendment A6; it was 140)
 ceiling.
 
 ## Error Handling and Safety
@@ -147,7 +147,7 @@ ceiling.
 
 The student approved the existing Part 1B specification as the requirements baseline,
 Gemini model `gemini-3.5-flash-lite`, temperature `0.3`, corpus sizes and repeated-run
-design, the 140-provider-attempt cap, and all listed evaluation thresholds. Implementation is
+design, the provider-attempt cap (140, raised to 200 by amendment A6), and all listed evaluation thresholds. Implementation is
 authorized to begin test-first. A credential already placed in chat must not be used; the
 student must rotate it and configure a replacement locally in the ignored `PART-1B/.env`
 file or the process environment.

@@ -13,7 +13,7 @@ def test_TEST_QUICKSTART_DOCUMENTS_EVALUATION_AND_PRIVACY_REQUIREMENTS() -> None
     for required_text in (
         "GEMINI_API_KEY",
         "reminder-agent-evaluate",
-        "140",
+        "200",
         "95%",
         "raw request text",
         "rotated",
