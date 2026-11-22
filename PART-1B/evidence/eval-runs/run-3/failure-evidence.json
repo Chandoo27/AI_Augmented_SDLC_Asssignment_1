@@ -1,0 +1,140 @@
+[
+  {
+    "actual": null,
+    "case_id": "EV-CREATE-005",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T10:00:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "water plants"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What reminder would you like to set?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-018",
+    "category": "malformed",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-RESCHEDULE-001",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-20T18:00:00+05:30",
+      "intent": "reschedule",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "reschedule",
+    "run_index": 2
+  },
+  {
+    "actual": null,
+    "case_id": "EV-SNOOZE-002",
+    "category": "duration",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T10:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "snooze",
+    "run_index": 3
+  },
+  {
+    "actual": null,
+    "case_id": "EV-SNOOZE-005",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T17:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T10:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "case_id": "EV-SNOOZE-014",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-HELDOUT-RESCHEDULE-005",
+    "category": "invalid-time",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "That date and time is not in the future. What future time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  }
+]
