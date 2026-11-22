@@ -1,0 +1,104 @@
+[
+  {
+    "actual": null,
+    "case_id": "EV-CREATE-003",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T09:30:00+05:30",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "submit the assignment"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "create",
+    "run_index": 2
+  },
+  {
+    "actual": {
+      "clarification_question": "",
+      "datetime": "2026-11-20T18:00:00-05:00",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "call parents"
+    },
+    "case_id": "EV-CREATE-017",
+    "category": "explicit-timezone",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T18:00:00-05:00",
+      "intent": "create",
+      "needs_clarification": false,
+      "task": "call parents"
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "create",
+    "run_index": 1
+  },
+  {
+    "actual": {
+      "clarification_question": "What reminder would you like?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "case_id": "EV-CLARIFY-018",
+    "category": "malformed",
+    "clarification_topic": "time",
+    "expected": {
+      "clarification_question": "What date and time should I use?",
+      "datetime": "",
+      "intent": "clarification",
+      "needs_clarification": true,
+      "task": ""
+    },
+    "failure_codes": [
+      "SEMANTIC_MISMATCH"
+    ],
+    "operation": "clarification",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-RESCHEDULE-003",
+    "category": "valid",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T11:00:00+05:30",
+      "intent": "reschedule",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "reschedule",
+    "run_index": 1
+  },
+  {
+    "actual": null,
+    "case_id": "EV-SNOOZE-008",
+    "category": "boundary",
+    "clarification_topic": null,
+    "expected": {
+      "clarification_question": "",
+      "datetime": "2026-11-19T21:00:00+05:30",
+      "intent": "snooze",
+      "needs_clarification": false,
+      "task": "pay electricity bill"
+    },
+    "failure_codes": [
+      "GEMINI_SERVER_RETRY_EXHAUSTED"
+    ],
+    "operation": "snooze",
+    "run_index": 1
+  }
+]
